@@ -10,4 +10,7 @@ class ProjectApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void contextLoads() {
+	}
 }
