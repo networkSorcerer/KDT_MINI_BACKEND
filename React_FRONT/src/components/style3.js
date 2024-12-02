@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Button1 = styled.button`
+export const Button3 = styled.button`
   background-color: #4caf50;
   color: white;
   border: none;
@@ -23,12 +23,11 @@ export const Button1 = styled.button`
   }
 `;
 
-export const Select = styled.select`
+export const Select3 = styled.select`
   width: 200px;
-  padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 25px;
   background-color: #fff;
   color: #333;
   transition: border-color 0.3s ease;
@@ -42,7 +41,7 @@ export const Select = styled.select`
   }
 `;
 
-export const StyledInput = styled.input`
+export const StyledInput3 = styled.input`
   width: ${(props) => props.width || "100%"};
   padding: ${(props) => props.padding || "10px"};
   margin: ${(props) => props.margin || "5px 0"};
@@ -69,6 +68,15 @@ export const StyledInput = styled.input`
   `}
 `;
 
-export const Input1 = (props) => {
-  return <StyledInput {...props} />;
+export const Input3 = (props) => {
+  return <StyledInput3 {...props} />;
 };
+
+export const Container3 = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fa;
+`;

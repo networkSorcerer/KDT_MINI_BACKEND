@@ -4,7 +4,7 @@ import Button from "../../components/ButtonComponent";
 import { Container, Items } from "../../components/SignupComponent";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../api/AxiosApi";
-import { Button1, Select,Input1 } from "../../components/style3";
+import { Button3, Select3,Input3, Container3 } from "../../components/style3";
 const Signup = () => {
   const navigate = useNavigate();
   // 키보드 입력
@@ -235,6 +235,7 @@ const Signup = () => {
           placeholder="이메일"
           value={inputEmail}
           onChange={onChangeMail}
+          isValid={isMail}
         />
       </Items>
       <Items variant="hint">
@@ -250,6 +251,7 @@ const Signup = () => {
           placeholder="패스워드"
           value={inputPw}
           onChange={onChangePw}
+           isValid={isPw}
         />
       </Items>
       <Items variant="hint">
@@ -265,6 +267,7 @@ const Signup = () => {
           placeholder="패스워드 확인"
           value={inputConPw}
           onChange={onChangeConPw}
+           isValid={isConPw}
         />
       </Items>
       <Items variant="hint">
@@ -280,10 +283,18 @@ const Signup = () => {
           placeholder="이름"
           value={inputName}
           onChange={onChangeName}
+           isValid={isName}
         />
       </Items>
       <Items varient="addres">
-        <Button onClick={handleClick1}>주소찾기</Button>
+        {isAddr &&
+        isDAddr ? (
+          <Button enabled onClick={handleClick1}>
+            NEXT
+          </Button>
+        ) : (
+          <Button disabled>NEXT</Button>
+        )}
       </Items>
       <Items>
         <Input
@@ -292,6 +303,7 @@ const Signup = () => {
           value={postcode}
           onChange={onChangePostCode}
           disabled
+           isValid={isPost}
         />
        </Items>
        <Items>
@@ -301,6 +313,7 @@ const Signup = () => {
           value={address}
           onChange={onChangeAddr}
           disabled
+           isValid={isAddr}
         />
       </Items>
       <Items>
@@ -309,6 +322,7 @@ const Signup = () => {
           placeholder="상세 주소"
           value={detailAddress}
           onChange={onChangeDAddr}
+           isValid={isDAddr}
         />
       </Items>
       <Items variant="hint">
@@ -333,25 +347,25 @@ const Signup = () => {
         )}
       </Items>
       <Items variant="phone">
-        <Select
+        <Input
           placeholder="전화번호"
-          value={hpFst}
+          value="010"
           onChange={(e) => setHpFst(e.target.value)}
-        >
-          <option value="010">010</option>
-          <option value="011">011</option>
-        </Select>
+           readOnly
+        />
         <Input
           type="number"
           placeholder="전화번호"
           value={hpMid}
           onChange={onChageMidPh}
+           isValid={isPh}
         />
         <Input
           type="text"
           placeholder="전화번호"
           value={hpLst}
           onChange={onChageLstPh}
+           isValid={isPh1}
         />
       </Items>
       <Items variant="hint">
