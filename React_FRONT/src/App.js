@@ -1,28 +1,22 @@
 import "./App.css";
-import GlobalStyle from "./styles/GlobalStyle";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UserStore from "./context/UserStore";
+import Home from "./Home";
+import Login from "./pages/signup/Login";
 import Signup from "./pages/signup/Signup";
-import Login from "./pages/signup/login";
-import Home from "./pages/Home";
-import Layout from "./pages/Layout";
-
+import AdminHome from "./pages/admin/AdminHome";
+import Address from "./pages/signup/address";
 function App() {
   return (
     <>
-      <GlobalStyle />
-      <UserStore>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route element={<Layout />}>
-              <Route path="/home" element={<Home />} />
-            </Route>
-            <Route path="/home" element={<Home />} />
-          </Routes>
-        </Router>
-      </UserStore>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin" element={<AdminHome />} />
+          <Route path="/address" element={<Address />} />
+        </Routes>
+      </Router>
     </>
   );
 }
