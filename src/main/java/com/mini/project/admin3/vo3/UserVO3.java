@@ -9,7 +9,8 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class UserDAO3 {
+
+public class UserVO3 {
     private String user_id;
     private String username;
     private String password;
