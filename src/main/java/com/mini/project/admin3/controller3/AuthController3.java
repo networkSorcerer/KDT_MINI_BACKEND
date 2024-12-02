@@ -1,7 +1,7 @@
 package com.mini.project.admin3.controller3;
 
 import com.mini.project.admin3.dao3.AdminDAO3;
-import com.mini.project.admin3.vo3.UserDAO3;
+import com.mini.project.admin3.vo3.UserVO3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +12,32 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins="http://localhost:3000")
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+// 회원 사진? 그리고 회원 주소, 전화 번호
 public class AuthController3 {
     private final AdminDAO3 adminDAO3;
     //로그인
     @PostMapping("/login")
-    public ResponseEntity<Boolean> logiin(@RequestBody UserDAO3 vo) {
+    public ResponseEntity<Boolean> login(@RequestBody UserVO3 vo) {
 
         log.info("ID {}", vo.getUser_id());
         log.info("패스워드 {}", vo.getPassword());
         boolean isSuccess = adminDAO3.login(vo.getUser_id(),vo.getPassword());
         return ResponseEntity.ok(isSuccess);
     }
-    // 관리자, 회원 관리, 리뷰, 상품 관리
+    // 회원 가입
+    @PostMapping("/signup")
+    public ResponseEntity<Boolean> signup(@RequestBody UserVO3 vo){
+        log.info("가입 {}",vo);
+        boolean isSuccess = adminDAO3.signup(vo);
+        return ResponseEntity.ok(isSuccess);
+    }
+    // 가입 여부 확인
+    @GetMapping("/exists/{email}")
+    public ResponseEntity<Boolean> exists(@PathVariable String email) {
+        log.error("email : {}", email );
+        boolean isExist = adminDAO3.isEmailExist(email);
+        return ResponseEntity.ok(!isExist);
+    }
+
+
 }
