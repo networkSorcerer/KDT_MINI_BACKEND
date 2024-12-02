@@ -1,7 +1,6 @@
 package com.mini.project.admin3.controller3;
 
 import com.mini.project.admin3.dao3.AdminDAO3;
-import com.mini.project.admin3.vo3.AdminVO3;
 import com.mini.project.admin3.vo3.UserVO3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,5 +31,13 @@ public class AuthController3 {
         boolean isSuccess = adminDAO3.signup(vo);
         return ResponseEntity.ok(isSuccess);
     }
+    // 가입 여부 확인
+    @GetMapping("/exists/{email}")
+    public ResponseEntity<Boolean> exists(@PathVariable String email) {
+        log.error("email : {}", email );
+        boolean isExist = adminDAO3.isEmailExist(email);
+        return ResponseEntity.ok(!isExist);
+    }
+
 
 }

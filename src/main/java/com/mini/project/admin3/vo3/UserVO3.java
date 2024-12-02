@@ -17,4 +17,6 @@ public class UserVO3 {
     private String email;
     private int role;
     private Date create_at;
+    private String address;
+    private String phone_number;
 }
