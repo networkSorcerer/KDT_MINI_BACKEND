@@ -15,6 +15,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/address" element={<Address />} />
+//          adress추후 삭제
         </Routes>
       </Router>
     </>
