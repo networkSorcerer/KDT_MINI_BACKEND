@@ -4,9 +4,7 @@ import Button from "../../components/ButtonComponent";
 import { Container, Items } from "../../components/SignupComponent";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../api/AxiosApi";
-import { Button1, Select } from "../../components/style3";
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>;
-
+import { Button1, Select,Input1 } from "../../components/style3";
 const Signup = () => {
   const navigate = useNavigate();
   // 키보드 입력
@@ -285,17 +283,19 @@ const Signup = () => {
         />
       </Items>
       <Items varient="addres">
-        <Button1 onClick={handleClick1}>주소찾기</Button1>
+        <Button onClick={handleClick1}>주소찾기</Button>
       </Items>
       <Items>
-        <input
+        <Input
           type="text"
           placeholder="우편번호"
           value={postcode}
           onChange={onChangePostCode}
           disabled
         />
-        <input
+       </Items>
+       <Items>
+        <Input
           type="text"
           placeholder="주소"
           value={address}

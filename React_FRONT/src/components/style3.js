@@ -41,3 +41,34 @@ export const Select = styled.select`
     padding: 10px;
   }
 `;
+
+export const StyledInput = styled.input`
+  width: ${(props) => props.width || "100%"};
+  padding: ${(props) => props.padding || "10px"};
+  margin: ${(props) => props.margin || "5px 0"};
+  border: ${(props) => props.border || "1px solid #ccc"};
+  border-radius: ${(props) => props.borderRadius || "5px"};
+  font-size: ${(props) => props.fontSize || "16px"};
+  outline: none;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: ${(props) => props.focusBorderColor || "#007BFF"};
+    box-shadow: ${(props) =>
+      props.focusBoxShadow || "0 0 5px rgba(0, 123, 255, 0.5)"};
+  }
+
+  &::placeholder {
+    color: ${(props) => props.placeholderColor || "#999"};
+  }
+
+  ${(props) => props.disabled && `
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    color: #ccc;
+  `}
+`;
+
+export const Input1 = (props) => {
+  return <StyledInput {...props} />;
+};
