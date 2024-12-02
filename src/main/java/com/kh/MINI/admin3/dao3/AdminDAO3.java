@@ -17,7 +17,7 @@ public class AdminDAO3 {
             "INSERT INTO users (user_id, email, password, username, phone_number, address, role) " +
                     "VALUES (USER_SEQ.nextval, ?, ?, ?, ?, ?, 0)";
     private static final String CHECK_EMAIL = "SELECT COUNT(*) FROM USERS WHERE email = ?";
-
+    private static final String CHECK_GRADE = "SELECT role FROM USERS WHERE email = ? AND password =?";
     // 로그인
     public boolean login(String email, String password) {
         try{
@@ -28,6 +28,19 @@ public class AdminDAO3 {
             return false;
         }
     }
+
+    public Integer gradeCheck(String email, String password) {
+        System.out.println(email);
+        System.out.println(password);
+        try {
+            // 쿼리 실행, 반환된 값은 Integer로 처리
+            return jdbcTemplate.queryForObject(CHECK_GRADE, new Object[]{email, password}, Integer.class);
+        } catch (DataAccessException e) {
+            log.error("권한 검색 실패", e);
+            return null;
+        }
+    }
+
 
     // 회원 가입
     public boolean signup(UserVO3 vo) {

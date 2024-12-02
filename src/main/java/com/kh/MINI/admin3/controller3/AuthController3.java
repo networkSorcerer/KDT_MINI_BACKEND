@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @Slf4j
 @CrossOrigin(origins="http://localhost:3000")
@@ -16,11 +19,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController3 {
     private final AdminDAO3 adminDAO3;
     //로그인
+    @GetMapping("/roleCheck")
+    public Map<String, Object> roleCheck(@RequestParam String email, @RequestParam String password) {
+        Map<String, Object> resultMap = new HashMap<>();
+        Integer roleCheck = adminDAO3.gradeCheck(email, password);  // Integer로 타입 명시
+        resultMap.put("roleCheck", roleCheck);
+        System.out.println(roleCheck);
+        return resultMap;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Boolean> login(@RequestBody UserVO3 vo) {
-
+        Map<String, Object> resultMap = new HashMap<>();
         log.info("ID {}", vo.getEmail());
         log.info("패스워드 {}", vo.getPassword());
+
         boolean isSuccess = adminDAO3.login(vo.getEmail(),vo.getPassword());
         return ResponseEntity.ok(isSuccess);
     }
