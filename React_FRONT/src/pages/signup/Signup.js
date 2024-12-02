@@ -5,6 +5,7 @@ import { Container, Items } from "../../components/SignupComponent";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../api/AxiosApi";
 import { Button3, Select3,Input3, Container3 } from "../../components/style3";
+import MyComponent from "../../components/MyComponent.js";
 const Signup = () => {
   const navigate = useNavigate();
   // 키보드 입력
@@ -177,7 +178,8 @@ const Signup = () => {
   };
 
   const UnionFirst = () => {
-    setPh(hpFst + "-" + hpMid + "-" + hpLst);
+  console.log(hpFst);
+    setPh( hpFst+ "-" + hpMid + "-" + hpLst);
     setInputAddress(postcode + ":" + address + ":" + detailAddress);
   };
   const onClickLogin = async () => {
@@ -226,7 +228,7 @@ const Signup = () => {
   return (
     <Container>
       <Items className="sign">
-        <span>Sign Up</span>
+        <span>회원 가입</span>
       </Items>
 
       <Items variant="item2">
@@ -287,13 +289,12 @@ const Signup = () => {
         />
       </Items>
       <Items varient="addres">
-        {isAddr &&
-        isDAddr ? (
-          <Button enabled onClick={handleClick1}>
-            NEXT
-          </Button>
+        {isAddr  ? (
+          <MyComponent enabled isValid={isAddr} onClick={handleClick1}>
+            주소 확인
+          </MyComponent>
         ) : (
-          <Button disabled>NEXT</Button>
+          <MyComponent enabled onClick={handleClick1}>주소확인</MyComponent>
         )}
       </Items>
       <Items>
@@ -325,32 +326,11 @@ const Signup = () => {
            isValid={isDAddr}
         />
       </Items>
-      <Items variant="hint">
-        {postcode.length > 0 && (
-          <span className={`message ${isPost ? "success" : "error"}`}>
-            <p>확인하였습니다.</p>
-          </span>
-        )}
-      </Items>
-      <Items variant="hint">
-        {address.length > 0 && (
-          <span className={`message ${isAddr ? "success" : "error"}`}>
-            <p>확인하였습니다.</p>
-          </span>
-        )}
-      </Items>
-      <Items variant="hint">
-        {detailAddress.length > 0 && (
-          <span className={`message ${isDAddr ? "success" : "error"}`}>
-            <p>확인하였습니다.</p>
-          </span>
-        )}
-      </Items>
+
       <Items variant="phone">
         <Input
           placeholder="전화번호"
           value="010"
-          onChange={(e) => setHpFst(e.target.value)}
            readOnly
         />
         <Input

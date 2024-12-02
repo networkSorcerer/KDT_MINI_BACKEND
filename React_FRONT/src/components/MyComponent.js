@@ -14,7 +14,7 @@ const StyledButton = styled.button`
   font-weight: 700;
 
   ${(props) =>
-    props.enabled &&
+    props.isValid &&
     css`
       background-color: green;
     `};
@@ -26,12 +26,12 @@ const StyledButton = styled.button`
   }
 `;
 
-const ButtonComponent = ({ enabled, onClick, children }) => {
+const MyComponent = ({ isValid, onClick, children }) => {
   return (
-    <StyledButton enabled={enabled} onClick={onClick}>
+    <StyledButton onClick={onClick} isValid={isValid}>
       {children}
     </StyledButton>
   );
 };
 
-export default ButtonComponent;
+export default MyComponent;
