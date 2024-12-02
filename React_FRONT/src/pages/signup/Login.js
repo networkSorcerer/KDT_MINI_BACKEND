@@ -50,9 +50,11 @@ const Login = () => {
   const onClickLogin = async () => {
     try {
       const rsp = await AxiosApi.login(inputEmail, inputPw);
+      // 로그인 수정 등급을 가져와서 등급에서 따라 다른 곳으로 navigate
       localStorage.setItem("email", inputEmail);
       localStorage.setItem("isLogin", "TRUE");
       console.log(rsp.data);
+
       if (rsp.data) {
         navigate("/home");
       } else {

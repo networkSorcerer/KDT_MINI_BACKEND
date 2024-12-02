@@ -16,7 +16,7 @@ const StyledButton = styled.button`
   ${(props) =>
     props.enabled &&
     css`
-      background-color: green;
+      background-color: orange;
     `};
 
   &:active {
