@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 public class AdminDAO3 {
     private final JdbcTemplate jdbcTemplate;
     private static final String LOGIN_QUERY = "SELECT COUNT(*) FROM users WHERE user_id = ? AND password =?";
-    private static final String SIGNUP_QUERY = "INSERT INTO users (user_id, email, password, username, phone_number, address, role) VALUES (USER_SEQ.nextval(), ?, ?, ?, ?, ?,0)";
+    private static final String SIGNUP_QUERY =
+            "INSERT INTO users (user_id, email, password, username, phone_number, address, role) " +
+                    "VALUES (USER_SEQ.nextval, ?, ?, ?, ?, ?, 0)";
     private static final String CHECK_EMAIL = "SELECT COUNT(*) FROM USERS WHERE email = ?";
 
     // 로그인
