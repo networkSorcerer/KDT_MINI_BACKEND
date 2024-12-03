@@ -1,53 +1,67 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+const KH_DOMAIN = "http://localhost:8112";
 const EmailVerification = () => {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
   const [sentCode, setSentCode] = useState("");
+  const [enteredCode, setEnteredCode] = useState("");
   const [message, setMessage] = useState("");
-
-  const handleSendCode = async () => {
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [verify, setVerify] = useState("");
+  const sendNumber = async () => {
+    console.log(email);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/auth/send-code",
-        { email }
-      );
-      setSentCode(response.data);
-      setMessage("이메일로 인증 코드가 전송되었습니다.");
+      const response = await axios.post(KH_DOMAIN + "/mail", {
+        mail: email,
+      });
+      setSentCode(response.data); // 서버에서 받은 인증 번호 저장
+      setIsCodeSent(true);
+      setMessage("인증번호 발송");
     } catch (error) {
-      setMessage("이메일 전송 실패");
+      setMessage("인증번호 발송 실패");
     }
   };
 
-  const handleVerifyCode = () => {
-    if (code === sentCode) {
-      setMessage("인증 성공");
-    } else {
-      setMessage("인증 코드가 잘못되었습니다.");
+  const confirmNumber = async () => {
+    try {
+      const response = await axios.post(KH_DOMAIN + "/verify", {
+        inputNumber: enteredCode,
+        mail: email,
+      });
+      const responseMessage = response.data; // 서버에서 받은 응답 메시지
+      setVerify(responseMessage); // 상태에 메시지 저장
+      console.log(responseMessage); // 서버 응답 확인
+      alert(responseMessage); // 응답 메시지 표시
+    } catch (error) {
+      alert("서버 오류");
     }
   };
 
   return (
     <div>
-      <h2>이메일 인증</h2>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="이메일을 입력하세요"
-      />
-      <button onClick={handleSendCode}>인증 코드 보내기</button>
+      <div>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일 입력"
+        />
+        <button type="button" onClick={sendNumber}>
+          인증번호 발송
+        </button>
+      </div>
 
-      {sentCode && (
+      {isCodeSent && (
         <div>
           <input
             type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="인증 코드를 입력하세요"
+            value={enteredCode}
+            onChange={(e) => setEnteredCode(e.target.value)}
+            placeholder="인증번호 입력"
           />
-          <button onClick={handleVerifyCode}>인증 코드 확인</button>
+          <button type="button" onClick={confirmNumber}>
+            이메일 인증
+          </button>
         </div>
       )}
 
