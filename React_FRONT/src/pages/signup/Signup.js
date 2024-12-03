@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../api/AxiosApi";
 import { Button3, Select3, Input3, Container3 } from "../../components/style3";
 import MyComponent from "../../components/MyComponent.js";
+import axios from "axios";
 const Signup = () => {
   const navigate = useNavigate();
   // 키보드 입력
@@ -42,6 +43,53 @@ const Signup = () => {
   const [isPost, setIsPost] = useState(false);
   const [isAddr, setIsAddr] = useState(false);
   const [isDAddr, setIsDAddr] = useState(false);
+  // 이메일 발송 확인
+  const [sendMail, setSendMail] = useState(false);
+  // 이메일 확인 검증
+  const [verifyedMail, setVerifyedMail] = useState(false);
+  // 이메일 인증
+  const [email, setEmail] = useState("");
+  const [sentCode, setSentCode] = useState("");
+  const [enteredCode, setEnteredCode] = useState("");
+  const [message, setMessage] = useState("");
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [verify, setVerify] = useState("");
+  const KH_DOMAIN = "http://localhost:8112";
+
+  const sendNumber = async () => {
+    setSendMail(true);
+    console.log(email);
+    try {
+      const response = await axios.post(KH_DOMAIN + "/mail", {
+        mail: email,
+      });
+      setSentCode(response.data); // 서버에서 받은 인증 번호 저장
+      setIsCodeSent(true);
+      setMessage("인증번호 발송");
+    } catch (error) {
+      setMessage("인증번호 발송 실패");
+    }
+  };
+
+  const confirmNumber = async () => {
+    try {
+      const response = await axios.post(KH_DOMAIN + "/verify", {
+        inputNumber: enteredCode,
+        mail: email,
+      });
+      const responseMessage = response.data; // 서버에서 받은 응답 메시지
+      setVerify(responseMessage); // 상태에 메시지 저장
+      alert(responseMessage); // 응답 메시지 표시
+      if (responseMessage === "인증 성공") {
+        setVerifyedMail(true);
+      } else {
+        setVerifyedMail(false);
+      }
+      console.log(responseMessage); // 서버 응답 확인
+    } catch (error) {
+      alert("서버 오류");
+    }
+  };
   useEffect(() => {
     const script = document.createElement("script");
     script.src =
@@ -96,6 +144,7 @@ const Signup = () => {
   };
   // 이메일 유효성 검사
   const onChangeMail = (e) => {
+    setEmail(e.target.value);
     setInputEmail(e.target.value);
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailRegex.test(e.target.value)) {
@@ -241,6 +290,41 @@ const Signup = () => {
           isValid={isMail}
         />
       </Items>
+      <Items className="item2">
+        <MyComponent type="button" isValid={sendMail} onClick={sendNumber}>
+          인증번호 발송
+        </MyComponent>
+      </Items>
+      <Items>
+        {isCodeSent && (
+          <div>
+            <Items>
+              <Input
+                type="text"
+                value={enteredCode}
+                onChange={(e) => setEnteredCode(e.target.value)}
+                placeholder="인증번호 입력"
+              />
+            </Items>
+            <Items>
+              <MyComponent
+                type="button"
+                isValid={verifyedMail}
+                onClick={confirmNumber}
+              >
+                이메일 인증
+              </MyComponent>
+            </Items>
+          </div>
+        )}
+
+        {message && (
+          <Items>
+            <p>{message}</p>
+          </Items>
+        )}
+      </Items>
+
       <Items variant="hint">
         {inputEmail.length > 0 && (
           <span className={`message ${isMail ? "success" : "error"}`}>
