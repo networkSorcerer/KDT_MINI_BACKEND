@@ -5,10 +5,10 @@ import Login from "./pages/signup/Login";
 import Signup from "./pages/signup/Signup";
 import AdminHome from "./pages/admin/AdminHome";
 import Address from "./pages/signup/address";
-import DragAndDropExample from "./pages/admin/HtmlDrag.js";
-import DragAndDropWithReactDnd from "./pages/admin/DragReact.js";
-import DragDirectionControl from "./pages/admin/Positon.js";
 import EmailVerification from "./pages/admin/EmailVerification.js";
+import DragAndDropThreeLists from "./pages/admin/TableDrad.js";
+import SwiperExample from "./pages/admin/Swiper.js";
+import Swiper2 from "./pages/admin/Swiper2.js";
 function App() {
   return (
     <>
@@ -19,10 +19,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/address" element={<Address />} />
-          <Route path="/drag" element={<DragAndDropExample />} />
-          <Route path="/drop" element={<DragAndDropWithReactDnd />} />
-          <Route path="/direction" element={<DragDirectionControl />} />
           <Route path="/mail" element={<EmailVerification />} />
+          <Route path="/td" element={<DragAndDropThreeLists />} />
+          <Route path="/swiper" element={<SwiperExample />} />
+          <Route path="/swiper2" element={<Swiper2 />} />
         </Routes>
       </Router>
     </>
