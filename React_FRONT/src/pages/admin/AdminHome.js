@@ -14,6 +14,8 @@ import { Pagination, Navigation } from "swiper/modules";
 import axios from "axios";
 import MyComponent from "../../components/MyComponent";
 
+const KH_DOMAIN = "http://localhost:8112";
+
 export default function AdminHome() {
   const [swiperRef, setSwiperRef] = useState(null);
   // CPU
@@ -37,10 +39,10 @@ export default function AdminHome() {
 
   useEffect(() => {
     totalList();
-  });
+  }, []);
   const totalList = () => {
     axios
-      .get("/products/list")
+      .get(KH_DOMAIN + "/products/list")
       .then((res) => {
         // 각 카테고리 데이터를 상태로 설정
         setCpu(res.data.cpu);
@@ -87,6 +89,27 @@ export default function AdminHome() {
         <SwiperSlide>Slide 2</SwiperSlide>
         <SwiperSlide>Slide 3</SwiperSlide>
         <SwiperSlide>Slide 4</SwiperSlide>
+      </Swiper>
+
+      <Swiper
+        onSwiper={setSwiperRef}
+        slidesPerView={6}
+        centeredSlides={true}
+        spaceBetween={30}
+        pagination={{
+          type: "fraction",
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="cpuSwiper"
+      >
+        {cpu.length > 0 ? (
+          cpu?.map((a) => (
+            <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>테이터가 없습니다.</SwiperSlide>
+        )}
       </Swiper>
     </>
   );
