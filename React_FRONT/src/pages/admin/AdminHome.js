@@ -73,28 +73,10 @@ export default function AdminHome() {
   return (
     <>
       <MyComponent>상품 추가</MyComponent>
-      <Swiper
-        onSwiper={setSwiperRef}
-        slidesPerView={3}
-        centeredSlides={true}
-        spaceBetween={30}
-        pagination={{
-          type: "fraction",
-        }}
-        navigation={true}
-        modules={[Pagination, Navigation]}
-        className="mySwiper"
-      >
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
-      </Swiper>
-
+      {/* CPU */}
       <Swiper
         onSwiper={setSwiperRef}
         slidesPerView={6}
-        centeredSlides={true}
         spaceBetween={30}
         pagination={{
           type: "fraction",
@@ -105,6 +87,106 @@ export default function AdminHome() {
       >
         {cpu.length > 0 ? (
           cpu?.map((a) => (
+            <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>테이터가 없습니다.</SwiperSlide>
+        )}
+      </Swiper>
+      {/* GPU */}
+      <Swiper
+        onSwiper={setSwiperRef}
+        slidesPerView={6}
+        spaceBetween={30}
+        pagination={{
+          type: "fraction",
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="cpuSwiper"
+      >
+        {gpu.length > 0 ? (
+          gpu?.map((a) => (
+            <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>테이터가 없습니다.</SwiperSlide>
+        )}
+      </Swiper>
+      {/* MAIN */}
+      <Swiper
+        onSwiper={setSwiperRef}
+        slidesPerView={6}
+        spaceBetween={30}
+        pagination={{
+          type: "fraction",
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="cpuSwiper"
+      >
+        {main.length > 0 ? (
+          main?.map((a) => (
+            <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>테이터가 없습니다.</SwiperSlide>
+        )}
+      </Swiper>
+      {/* RAM */}
+      <Swiper
+        onSwiper={setSwiperRef}
+        slidesPerView={6}
+        spaceBetween={30}
+        pagination={{
+          type: "fraction",
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="cpuSwiper"
+      >
+        {ram.length > 0 ? (
+          ram?.map((a) => (
+            <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>테이터가 없습니다.</SwiperSlide>
+        )}
+      </Swiper>
+      {/* SSD */}
+      <Swiper
+        onSwiper={setSwiperRef}
+        slidesPerView={6}
+        spaceBetween={30}
+        pagination={{
+          type: "fraction",
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="cpuSwiper"
+      >
+        {ssd.length > 0 ? (
+          ssd?.map((a) => (
+            <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
+          ))
+        ) : (
+          <SwiperSlide>테이터가 없습니다.</SwiperSlide>
+        )}
+      </Swiper>
+      {/* POWER */}
+      <Swiper
+        onSwiper={setSwiperRef}
+        slidesPerView={6}
+        spaceBetween={30}
+        pagination={{
+          type: "fraction",
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className="cpuSwiper"
+      >
+        {power.length > 0 ? (
+          power?.map((a) => (
             <SwiperSlide key={a.product_id}>{a.name}</SwiperSlide>
           ))
         ) : (
