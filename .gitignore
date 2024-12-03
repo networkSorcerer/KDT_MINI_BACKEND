@@ -1,8 +1,8 @@
 # Node.js 관련
 node_modules/
 .cache/
-/src/main/resources/application.properties
-/src/main/java/com/kh/MINI/config
+#/src/main/resources/application.properties
+#/src/main/java/com/kh/MINI/config
 # Gradle 빌드 파일
 /build/
 .gradle/

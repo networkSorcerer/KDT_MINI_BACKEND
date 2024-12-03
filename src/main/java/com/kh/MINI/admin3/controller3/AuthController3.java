@@ -1,9 +1,11 @@
 package com.kh.MINI.admin3.controller3;
 
 import com.kh.MINI.admin3.dao3.AdminDAO3;
+import com.kh.MINI.admin3.service.EmailService;
 import com.kh.MINI.admin3.vo3.UserVO3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,16 @@ import java.util.Map;
 // 회원 사진? 그리고 회원 주소, 전화 번호
 public class AuthController3 {
     private final AdminDAO3 adminDAO3;
+
+    //메일 인증
+    @Autowired
+    private EmailService emailService;
+
+    @PostMapping("/send-code")
+    public String sendCode(@RequestParam String email) {
+        // 인증 코드 전송 및 코드 반환
+        return emailService.sendVerificationEmail(email);
+    }
     //로그인
     @GetMapping("/roleCheck")
     public Map<String, Object> roleCheck(@RequestParam String email, @RequestParam String password) {

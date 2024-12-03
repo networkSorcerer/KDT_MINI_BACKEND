@@ -7,6 +7,8 @@ import AdminHome from "./pages/admin/AdminHome";
 import Address from "./pages/signup/address";
 import DragAndDropExample from "./pages/admin/HtmlDrag.js";
 import DragAndDropWithReactDnd from "./pages/admin/DragReact.js";
+import DragDirectionControl from "./pages/admin/Positon.js";
+import EmailVerification from "./pages/admin/EmailVerification.js";
 function App() {
   return (
     <>
@@ -19,6 +21,8 @@ function App() {
           <Route path="/address" element={<Address />} />
           <Route path="/drag" element={<DragAndDropExample />} />
           <Route path="/drop" element={<DragAndDropWithReactDnd />} />
+          <Route path="/direction" element={<DragDirectionControl />} />
+          <Route path="/mail" element={<EmailVerification />} />
         </Routes>
       </Router>
     </>
