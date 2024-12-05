@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // firebase
@@ -14,6 +14,7 @@ import "../../css/style1.css";
 import "../../css/product.css";
 import { Button3 } from "../../components/style3";
 import Modal from "./modal/ProductUpdateModal";
+import { UserContext } from "../../api/provider/UserContextProvider";
 const KH_DOMAIN = "http://localhost:8112";
 
 export default function AdminHome() {
@@ -37,6 +38,8 @@ export default function AdminHome() {
   const [ssdImage, setSsdImage] = useState({});
   const [powerImage, setPowerImage] = useState({});
 
+  // useContext
+  const { email, role, userName } = useContext(UserContext);
   const closeModal = () => {
     setModalOpen(false);
     totalList();
@@ -120,6 +123,7 @@ export default function AdminHome() {
 
   // Fetch data when the component mounts
   useEffect(() => {
+    console.log("user context : ", email, role, userName);
     totalList();
   }, []);
 
