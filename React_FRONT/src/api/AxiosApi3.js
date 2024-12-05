@@ -43,9 +43,21 @@ const AxiosApi = {
   categoryList: async () => {
     return await axios.get(KH_DOMAIN + "/products/category");
   },
+<<<<<<< HEAD
   // 상품 등록
   productSave: async (params) => {
     return await axios.post(KH_DOMAIN + "/products/save", params);
+=======
+  productSave: async (category, productName, price, stock, description) => {
+    const product = {
+      category_id: category,
+      name: productName,
+      price: price,
+      stock: stock,
+      description: description,
+    };
+    return await axios.post(KH_DOMAIN + "/products/save", product);
+>>>>>>> 617968bc330fab2d5ecbc698b1f0dfa4e4b21aac
   },
 };
 
