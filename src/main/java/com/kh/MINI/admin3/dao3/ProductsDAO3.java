@@ -24,8 +24,7 @@ public class ProductsDAO3 {
     private static final String UPDATE_PRODUCT = "UPDATE PRODUCTS SET name = ? , price = ? , stock =? , description = ? WHERE product_id = ?";
     public List<ProductsVO3> getAllProducts() {
         try {
-            return jdbcTemplate.query(ALL_PRODUCTS, new ProductsRowMapper() {
-            });
+            return jdbcTemplate.query(ALL_PRODUCTS, new ProductsRowMapper());
         } catch (DataAccessException e) {
             log.error("상품 출력 중 예외 발생",e);
             throw e;

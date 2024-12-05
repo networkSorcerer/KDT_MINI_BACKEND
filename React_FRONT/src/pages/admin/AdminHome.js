@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // firebase
@@ -15,6 +15,7 @@ import "../../css/style1.css";
 import "../../css/product.css";
 import { Button3 } from "../../components/style3";
 import Modal from "./modal/Modal";
+import { UserContext } from "../../api/provider/UserContextProvider";
 const KH_DOMAIN = "http://localhost:8112";
 
 export default function AdminHome() {
@@ -37,7 +38,7 @@ export default function AdminHome() {
   const [ramImage, setRamImage] = useState({});
   const [ssdImage, setSsdImage] = useState({});
   const [powerImage, setPowerImage] = useState({});
-
+  const { email, role, userName } = useContext(UserContext);
   const closeModal = () => {
     setModalOpen(false);
     totalList();
@@ -52,6 +53,9 @@ export default function AdminHome() {
   };
   // Fetch product data from the backend
   const totalList = async () => {
+    console.log("useContext 확인 : ", email);
+    console.log("useContext 확인 : ", role);
+    console.log("useContext 확인 : ", userName);
     try {
       const response = await axios.get(KH_DOMAIN + "/products/list");
       const data = response.data;

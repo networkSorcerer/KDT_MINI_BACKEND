@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,7 +24,7 @@ public class AuthController3 {
     @GetMapping("/roleCheck")
     public Map<String, Object> roleCheck(@RequestParam String email, @RequestParam String password) {
         Map<String, Object> resultMap = new HashMap<>();
-        Integer roleCheck = adminDAO3.gradeCheck(email, password);  // Integer로 타입 명시
+        List<UserVO3> roleCheck = adminDAO3.gradeCheck(email, password);  // Integer로 타입 명시
         resultMap.put("roleCheck", roleCheck);
         System.out.println(roleCheck);
         return resultMap;
