@@ -80,6 +80,13 @@ public class ProductsController3 {
         return resultMap;
     }
 
+    // 상품 이름 유효성 검사
+    @GetMapping("/product_name")
+    public ResponseEntity<Boolean> product_name (@RequestBody ProductsVO3 vo) {
+        boolean isSuccess = productsDAO3.productName(vo.getName());
+        return ResponseEntity.ok(isSuccess);
+    }
+
 
 
 

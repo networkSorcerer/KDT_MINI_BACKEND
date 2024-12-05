@@ -23,6 +23,7 @@ public class AdminDAO3 {
                     "VALUES (?, ?, ?, ?, ?, 0)";
     private static final String CHECK_EMAIL = "SELECT COUNT(*) FROM USERS WHERE email = ?";
     private static final String CHECK_GRADE = "SELECT role , username FROM USERS WHERE email = ? AND password = ?";
+
     // 로그인
     public boolean login(String email, String password) {
         try{
@@ -34,6 +35,7 @@ public class AdminDAO3 {
         }
     }
 
+    // 등급 체크
     public List<UserVO3> gradeCheck(String email, String password) {
         try {
 
@@ -66,6 +68,8 @@ public class AdminDAO3 {
             return false;
         }
     }
+
+
     private static class UserRowMapper implements RowMapper<UserVO3> {
         @Override
         public UserVO3 mapRow(ResultSet rs, int rowNum) throws SQLException {

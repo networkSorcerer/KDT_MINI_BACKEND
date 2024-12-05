@@ -32,6 +32,10 @@ public class ProductsDAO3 {
     private static final String DELETE_PRODUCT="DELETE FORM PRODUCTS WHERE PRODUCT_ID =?";
     // 카테고리 리스트
     private static final String ALL_CATEGORY="SELECT * FROM CATEGORIES";
+    // 상품 이름 유효성 검사
+    private static final String CHECK_PRODUCT_NAME="SELECT COUNT(*) FORM PRODUCTS WHERE NAME = ?";
+
+
     // 상품 리스트 출력
     public List<ProductsVO3> getAllProducts() {
         try {
@@ -81,11 +85,23 @@ public class ProductsDAO3 {
         }
     }
 
+    // 카테고리 리스트 출력
     public List<CategoriesVO3> category() {
         try{
             return jdbcTemplate.query(ALL_CATEGORY, new CategoryRowMapper());
         }catch (DataAccessException e) {
             log.error("카테고리 리스트 출력시 에러",e);
+            throw e;
+        }
+    }
+
+    // 상품 이름 유효성 검사
+    public boolean productName(String name) {
+        try{
+            int result = jdbcTemplate.queryForObject(CHECK_PRODUCT_NAME, new Object[]{name},Integer.class);
+            return result >0;
+        }catch (DataAccessException e){
+            log.error("상품 이름 유효성 검사 실패 : ", e);
             throw e;
         }
     }
