@@ -3,30 +3,24 @@ import React, { useEffect, useState } from "react";
 import { ModalStyle, ModalButton } from "../style/ModalStyle";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../api/firebase";
-import AxiosApi from "../../../api/AxiosApi3";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../api/recoil/modalState";
 
 const Modal = (props) => {
-  const { updateModalState, type, productId, category, productName } = props;
-  const [productDetail, setProductDetail] = useState([]);
+  const { open, close, type, productId, category, productName } = props;
+  const [productDetail, setProductDetail] = useState(null);
   const [url, setUrl] = useState(null);
   const [error, setError] = useState(null);
   const [file, setFile] = useState(null); // 업로드할 파일
-  const [modal, setModal] = useRecoilState(modalState);
+
   useEffect(() => {
-    console.log("오픈 :", updateModalState);
-    console.log("프로덕트 아이디 : ", productId);
-    // 모달이 열릴 때만 실행하도록 조건을 추가
-    if (modal) {
+    if (productId) {
       DetailProduct();
-    } else if (modal && category && productName) {
+    }
+    if (category && productName) {
       getImage();
     }
-  }, [modal]); // 의존성 배열
+  }, [productId, category, productName]);
 
   const DetailProduct = async () => {
-    console.log("모달 props로 가져온 productId : ", productId); // 아직 안탐
     try {
       const response = await axios.get(
         "http://localhost:8112/products/detail",
@@ -95,7 +89,7 @@ const Modal = (props) => {
       };
     }
   };
-  // 수정 버튼 클릭시 이미지 업로드
+  // 업로드 버튼 클릭 핸들러
   const handleUploadClick = () => {
     if (!file) {
       alert("파일을 선택해주세요.");
@@ -116,8 +110,6 @@ const Modal = (props) => {
         });
     });
   };
-
-  // 상품 수정
   const update = async () => {
     try {
       const response = await axios.post(
@@ -135,19 +127,6 @@ const Modal = (props) => {
       alert("에러가 발생했습니다.");
     }
   };
-
-  // 상품 등록
-  const productSave = async () => {
-    try {
-      const rsp = await AxiosApi.productSave(productDetail);
-      setError(rsp.data);
-      if (error === true) {
-        alert("상품이 등록되었습니다.");
-      } else {
-        alert("상품 등록에 실패하였습니다.");
-      }
-    } catch {}
-  };
   // 모달 닫을 때 상태 초기화
   const resetModal = () => {
     setProductDetail(null);
@@ -156,131 +135,120 @@ const Modal = (props) => {
     setError(null);
   };
   return (
-    <>
-      {modal && (
-        <ModalStyle>
-          <div className={updateModalState ? "openModal modal" : "modal"}>
-            {updateModalState && (
-              <section>
-                <header>
-                  <h2> 상품 수정</h2>
-                  <button
-                    onClick={() => {
-                      resetModal(); // 상태 초기화
-                      setModal(!modal); // 모달 상태 변경
-                    }}
-                  >
-                    &times;
-                  </button>
-                </header>
-                <main>
-                  {url && !file ? (
-                    <img
-                      src={url}
-                      alt="Downloaded File"
-                      style={{ maxWidth: "100%" }}
+    <ModalStyle>
+      <div className={open ? "openModal modal" : "modal"}>
+        {open && (
+          <section>
+            <header>
+              <h2>{productId ? "상품 수정" : "상품 등록"}</h2>
+              <button
+                onClick={() => {
+                  close();
+                  resetModal();
+                }}
+              >
+                &times;
+              </button>
+            </header>
+            <main>
+              {url && !file ? (
+                <img
+                  src={url}
+                  alt="Downloaded File"
+                  style={{ maxWidth: "100%" }}
+                />
+              ) : file ? (
+                <img
+                  src={URL.createObjectURL(file)} // 또는 업로드 후의 URL을 사용
+                  alt="Downloaded File"
+                  style={{ maxWidth: "100%" }}
+                />
+              ) : (
+                <p>파일이 선택되지 않았습니다.</p> // file과 url이 모두 없는 경우
+              )}
+
+              <input type="file" onChange={handleFileInputChange} />
+              {productDetail ? (
+                <>
+                  <div>
+                    <label>종류: </label>
+                    <input
+                      type="text"
+                      value={productDetail[0].category}
+                      readOnly
                     />
-                  ) : file ? (
-                    <img
-                      src={URL.createObjectURL(file)} // 또는 업로드 후의 URL을 사용
-                      alt="Downloaded File"
-                      style={{ maxWidth: "100%" }}
+                  </div>
+                  <div>
+                    <label>상품 이름: </label>
+                    <input
+                      type="text"
+                      value={productDetail[0].name}
+                      onChange={(e) => {
+                        const updatedDetail = [...productDetail];
+                        updatedDetail[0].name = e.target.value;
+                        setProductDetail(updatedDetail);
+                      }}
                     />
-                  ) : (
-                    <p>파일이 선택되지 않았습니다.</p> // file과 url이 모두 없는 경우
-                  )}
-
-                  <input type="file" onChange={handleFileInputChange} />
-
-                  <>
-                    <div>
-                      <>
-                        <label>종류: </label>
-                        <input
-                          type="text"
-                          value={productDetail[0].category}
-                          readOnly
-                        />
-                      </>
-                    </div>
-
-                    <div>
-                      <label>상품 이름: </label>
-                      <input
-                        type="text"
-                        value={productId !== null ? productDetail[0].name : ""}
-                        onChange={(e) => {
-                          const updatedDetail = [...productDetail];
-                          updatedDetail[0].name = e.target.value;
-                          setProductDetail(updatedDetail);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label>상품 가격: </label>
-                      <input
-                        type="text"
-                        value={productId !== null ? productDetail[0].price : ""}
-                        onChange={(e) => {
-                          const updatedDetail = [...productDetail];
-                          updatedDetail[0].price = e.target.value;
-                          setProductDetail(updatedDetail);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label>수량: </label>
-                      <input
-                        type="number"
-                        value={productId !== null ? productDetail[0].stock : ""}
-                        onChange={(e) => {
-                          const updatedDetail = [...productDetail];
-                          updatedDetail[0].stock = e.target.value;
-                          setProductDetail(updatedDetail);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label>상세 정보: </label>
-                      <input
-                        value={
-                          productId !== null ? productDetail[0].description : ""
-                        }
-                        onChange={(e) => {
-                          const updatedDetail = [...productDetail];
-                          updatedDetail[0].description = e.target.value;
-                          setProductDetail(updatedDetail);
-                        }}
-                      />
-                    </div>
-                  </>
-                </main>
-                <footer>
-                  {productId === null ? (
-                    <ModalButton onClick={() => productSave}>등록</ModalButton>
-                  ) : (
-                    <>
-                      <input value={productId} />
-                      <ModalButton onClick={() => update()}>수정</ModalButton>
-                      <ModalButton>삭제</ModalButton>
-                    </>
-                  )}
-
-                  <button
-                    onClick={() => {
-                      setModal(!modal);
-                      resetModal();
-                    }}
-                  >
-                    취소
-                  </button>
-                </footer>
-              </section>
-            )}
-          </div>
-        </ModalStyle>
-      )}{" "}
-    </>
+                  </div>
+                  <div>
+                    <label>상품 가격: </label>
+                    <input
+                      type="text"
+                      value={productDetail[0].price}
+                      onChange={(e) => {
+                        const updatedDetail = [...productDetail];
+                        updatedDetail[0].price = e.target.value;
+                        setProductDetail(updatedDetail);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label>수량: </label>
+                    <input
+                      type="number"
+                      value={productDetail[0].stock}
+                      onChange={(e) => {
+                        const updatedDetail = [...productDetail];
+                        updatedDetail[0].stock = e.target.value;
+                        setProductDetail(updatedDetail);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label>상세 정보: </label>
+                    <input
+                      value={productDetail[0].description}
+                      onChange={(e) => {
+                        const updatedDetail = [...productDetail];
+                        updatedDetail[0].description = e.target.value;
+                        setProductDetail(updatedDetail);
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <p>상품 데이터를 불러오는 중입니다...</p>
+              )}
+            </main>
+            <footer>
+              {productId ? (
+                <ModalButton onClick={() => update()}>수정</ModalButton>
+              ) : (
+                <ModalButton>등록</ModalButton>
+              )}
+              <button
+                onClick={() => {
+                  close();
+                  resetModal();
+                }}
+              >
+                취소
+              </button>
+            </footer>
+          </section>
+        )}
+      </div>
+    </ModalStyle>
   );
 };
 

@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-
+import React, { useEffect, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // firebase
@@ -16,15 +14,10 @@ import "../../css/style1.css";
 import "../../css/product.css";
 import { Button3 } from "../../components/style3";
 import Modal from "./modal/ProductUpdateModal";
-import { UserContext } from "../../api/provider/UserContextProvider";
-import ProductSaveModal from "./modal/ProductSaveModal";
-import { modalState } from "../../api/recoil/modalState";
-import { modalState1 } from "../../api/recoil/modalState1";
 const KH_DOMAIN = "http://localhost:8112";
 
 export default function AdminHome() {
-  const [modalOpen, setModalOpen] = useRecoilState(modalState);
-  const [saveModalOpen, setSaveModalOpen] = useRecoilState(modalState1);
+  const [modalOpen, setModalOpen] = useState(false);
   const [productId, setProductId] = useState("");
   const [category, setCategory] = useState("");
   const [productName, setProductName] = useState("");
@@ -43,27 +36,21 @@ export default function AdminHome() {
   const [ramImage, setRamImage] = useState({});
   const [ssdImage, setSsdImage] = useState({});
   const [powerImage, setPowerImage] = useState({});
-  const { email, role, userName } = useContext(UserContext);
 
-  const saveModalState = () => {
-    console.log("저장 모달 창 ");
-    setSaveModalOpen(!saveModalOpen);
+  const closeModal = () => {
+    setModalOpen(false);
+    totalList();
   };
 
-  const updateModalState = (product_id, category, productName) => {
-    console.log("adminHOME  product_id : ", product_id);
-    console.log("adminHOME  category : ", category);
-    console.log("adminHOME  productName : ", productName);
+  const modalState = (product_id, category, productName) => {
+    console.log(product_id);
     setProductId(product_id);
     setCategory(category);
     setProductName(productName);
-    setModalOpen(!modalOpen);
+    setModalOpen(true);
   };
   // Fetch product data from the backend
   const totalList = async () => {
-    console.log("useContext 확인 : ", email);
-    console.log("useContext 확인 : ", role);
-    console.log("useContext 확인 : ", userName);
     try {
       const response = await axios.get(KH_DOMAIN + "/products/list");
       const data = response.data;
@@ -151,9 +138,7 @@ export default function AdminHome() {
           <SwiperSlide key={a.product_id} className="product-slide">
             <div
               className="product-image"
-              onClick={() =>
-                updateModalState(a.product_id, a.category, a.product)
-              }
+              onClick={() => modalState(a.product_id, a.category, a.product)}
             >
               {imageMap[a.product_id] ? (
                 <img src={imageMap[a.product_id]} alt={a.name} />
@@ -175,7 +160,7 @@ export default function AdminHome() {
 
   return (
     <>
-      <Button3 onClick={() => saveModalState()}>상품 추가</Button3>
+      <Button3 onClick={modalState}>상품 추가</Button3>
 
       {/* Render each category swiper */}
       {renderSwiper("cpu", cpu, cpuImage)}
@@ -186,16 +171,13 @@ export default function AdminHome() {
       {renderSwiper("power", power, powerImage)}
 
       <Modal
-        updateModalState={updateModalState}
+        open={modalOpen}
+        close={closeModal}
         type={true}
         productId={productId}
         category={category}
         productName={productName}
       ></Modal>
-      <ProductSaveModal
-        saveModalOpen={saveModalOpen}
-        type={true}
-      ></ProductSaveModal>
     </>
   );
 }

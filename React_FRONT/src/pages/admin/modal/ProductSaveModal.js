@@ -8,6 +8,7 @@ const ProductSaveModal = (props) => {
   const { close, open, type } = props;
   const [categoryList, setCategoryList] = useState([]);
   const [modal, setModal] = useRecoilState(modalState1);
+  const [error, setError] = useState("");
   useEffect(() => {
     //Categories();
   });
@@ -18,11 +19,23 @@ const ProductSaveModal = (props) => {
       setCategoryList(rsp.data.category);
     } catch {}
   };
+  // 상품 등록
+  const productSave = async () => {
+    try {
+      const rsp = await AxiosApi.productSave();
+      setError(rsp.data);
+      if (error === true) {
+        alert("상품이 등록되었습니다.");
+      } else {
+        alert("상품 등록에 실패하였습니다.");
+      }
+    } catch {}
+  };
   const resetModal = () => {};
   return (
     <ModalStyle>
-      <div className={open ? "openModal modal" : "modal"}>
-        {open && (
+      <div className={modal ? "openModal modal" : "modal"}>
+        {modal && (
           <section>
             <header>
               <h2> 상품 등록</h2>
