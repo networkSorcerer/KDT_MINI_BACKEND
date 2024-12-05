@@ -67,6 +67,7 @@ public class ProductsDAO3 {
             int result = jdbcTemplate.update(SAVE_PRODUCT, vo.getName(),vo.getDescription(),vo.getPrice(),vo.getStock(),vo.getCategory_id());
             return result > 0;
         }catch (DataAccessException e) {
+            log.error("상품 등록 에러",e);
             return false;
         }
     }

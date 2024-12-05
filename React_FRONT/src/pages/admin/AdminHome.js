@@ -15,10 +15,12 @@ import "../../css/product.css";
 import { Button3 } from "../../components/style3";
 import Modal from "./modal/ProductUpdateModal";
 import { UserContext } from "../../api/provider/UserContextProvider";
+import ProductSaveModal from "./modal/ProductSaveModal";
 const KH_DOMAIN = "http://localhost:8112";
 
 export default function AdminHome() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen1, setModalOpen1] = useState(false);
   const [productId, setProductId] = useState("");
   const [category, setCategory] = useState("");
   const [productName, setProductName] = useState("");
@@ -42,7 +44,11 @@ export default function AdminHome() {
   const { email, role, userName } = useContext(UserContext);
   const closeModal = () => {
     setModalOpen(false);
-    totalList();
+    //totalList();
+  };
+  const closeModal1 = () => {
+    setModalOpen1(false);
+    //totalList();
   };
 
   const modalState = (product_id, category, productName) => {
@@ -51,6 +57,9 @@ export default function AdminHome() {
     setCategory(category);
     setProductName(productName);
     setModalOpen(true);
+  };
+  const modalState1 = () => {
+    setModalOpen1(true);
   };
   // Fetch product data from the backend
   const totalList = async () => {
@@ -164,7 +173,7 @@ export default function AdminHome() {
 
   return (
     <>
-      <Button3 onClick={modalState}>상품 추가</Button3>
+      <Button3 onClick={modalState1}>상품 추가</Button3>
 
       {/* Render each category swiper */}
       {renderSwiper("cpu", cpu, cpuImage)}
@@ -182,6 +191,11 @@ export default function AdminHome() {
         category={category}
         productName={productName}
       ></Modal>
+      <ProductSaveModal
+        open={modalOpen1}
+        close={closeModal1}
+        type={true}
+      ></ProductSaveModal>
     </>
   );
 }
