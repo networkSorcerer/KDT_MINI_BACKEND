@@ -24,18 +24,23 @@ const AxiosApi = {
     };
     return await axios.post(KH_DOMAIN + `/auth/signup`, member);
   },
- roleCheck: async (email, password) => {
-   console.log("이메일 : ", email);
-   console.log("패스워드 : ", password);
+  roleCheck: async (email, password) => {
+    console.log("이메일 : ", email);
+    console.log("패스워드 : ", password);
 
-   const params = {
-     email: email,
-     password: password,
-   };
+    const params = {
+      email: email,
+      password: password,
+    };
 
-   return await axios.get(KH_DOMAIN + "/auth/roleCheck", { params });
- }
-
+    return await axios.get(KH_DOMAIN + "/auth/roleCheck", { params });
+  },
+  categoryList: async () => {
+    return await axios.get(KH_DOMAIN + "/products/category");
+  },
+  productSave: async (params) => {
+    return await axios.post(KH_DOMAIN + "/products/save", params);
+  },
 };
 
 export default AxiosApi;

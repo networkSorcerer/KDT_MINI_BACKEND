@@ -1,6 +1,7 @@
 package com.kh.MINI.admin3.controller3;
 
 import com.kh.MINI.admin3.dao3.ProductsDAO3;
+import com.kh.MINI.admin3.vo3.CategoriesVO3;
 import com.kh.MINI.admin3.vo3.ProductsVO3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductsController3 {
     private final ProductsDAO3 productsDAO3;
+
     // 카테고리 별로 분류된 제품 목록
     @GetMapping("/list")
     public Map<String, Object> productList() {
@@ -38,6 +40,8 @@ public class ProductsController3 {
         return resultMap;
 
     }
+
+    // 상품 상세 페이지
     @GetMapping("/detail")
     public Map<String, Object> productDetail(@RequestParam("productId")int productId) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -46,11 +50,36 @@ public class ProductsController3 {
         return resultMap;
     }
 
+    // 상품 수정
     @PostMapping("/update")
     public ResponseEntity<Boolean> productUpdate(@RequestBody ProductsVO3 vo){
         boolean isSuccess = productsDAO3.update(vo);
         return ResponseEntity.ok(isSuccess);
     }
+
+    // 상품 등록
+    @PostMapping("/save")
+    public ResponseEntity<Boolean> productSave(@RequestBody ProductsVO3 vo) {
+        boolean isSuccess = productsDAO3.save(vo);
+        return ResponseEntity.ok(isSuccess);
+    }
+
+    // 상품 삭제
+    @PostMapping("/delete")
+    public ResponseEntity<Boolean> productDelete(@RequestBody ProductsVO3 vo) {
+        boolean isSuccess = productsDAO3.delete(vo);
+        return ResponseEntity.ok(isSuccess);
+    }
+
+    // 카테고리 목록 리스트
+    @GetMapping("/category")
+    public Map<String ,Object> category (){
+        Map<String ,Object> resultMap = new HashMap<>();
+        List<CategoriesVO3>category = productsDAO3.category();
+        resultMap.put("category",category);
+        return resultMap;
+    }
+
 
 
 

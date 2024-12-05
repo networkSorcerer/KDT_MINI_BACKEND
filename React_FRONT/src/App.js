@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { RecoilRoot } from "recoil"; // RecoilRoot 임포트
 import Home from "./pages/Home.js";
 import Login from "./pages/signup/Login";
 import Signup from "./pages/signup/Signup";
@@ -14,7 +15,8 @@ import { UserContextProvider } from "./api/provider/UserContextProvider.js";
 
 function App() {
   return (
-    <>
+    // RecoilRoot로 앱을 감싸서 Recoil 상태 관리 사용
+    <RecoilRoot>
       {/* UserContextProvider는 Router와 Routes를 감싸야 함 */}
       <UserContextProvider>
         <Router>
@@ -32,7 +34,7 @@ function App() {
           </Routes>
         </Router>
       </UserContextProvider>
-    </>
+    </RecoilRoot>
   );
 }
 

@@ -5,7 +5,7 @@ import imgLogo from "../../images/kakaoLion.png";
 import Button from "../../components/ButtonComponent";
 import Input from "../../components/InputComponent";
 import { Container, Items } from "../../components/SignupComponent";
-import AxiosApi from "../../api/AxiosApi";
+import AxiosApi from "../../api/AxiosApi3";
 import Modal from "../../utils/Modal";
 import { UserContext } from "../../api/provider/UserContextProvider";
 
