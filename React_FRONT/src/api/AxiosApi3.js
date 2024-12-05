@@ -38,8 +38,15 @@ const AxiosApi = {
   categoryList: async () => {
     return await axios.get(KH_DOMAIN + "/products/category");
   },
-  productSave: async (params) => {
-    return await axios.post(KH_DOMAIN + "/products/save", params);
+  productSave: async (category, productName, price, stock, description) => {
+    const product = {
+      category_id: category,
+      name: productName,
+      price: price,
+      stock: stock,
+      description: description,
+    };
+    return await axios.post(KH_DOMAIN + "/products/save", product);
   },
 };
 
