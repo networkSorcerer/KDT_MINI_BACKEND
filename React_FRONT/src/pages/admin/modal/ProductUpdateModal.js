@@ -152,7 +152,6 @@ const Modal = (props) => {
           await handleDeleteUnuseImage();
         }
         close();
-        resetModal();
       } else {
         alert("수정에 실패하였습니다.");
       }
@@ -171,7 +170,6 @@ const Modal = (props) => {
         await handleDelete();
         alert("상품이 삭제되었습니다.");
         close();
-        resetModal();
       } else {
         alert("상품을 삭제하는데 실패하였습니다.");
       }
@@ -217,14 +215,6 @@ const Modal = (props) => {
     }
   };
 
-  // 모달 닫을 때 상태 초기화
-  const resetModal = () => {
-    setProductDetail(null);
-    setUrl(null);
-    setFile(null);
-    setError(null);
-  };
-
   return (
     <ModalStyle>
       <div className={open ? "openModal modal" : "modal"}>
@@ -235,7 +225,6 @@ const Modal = (props) => {
               <button
                 onClick={() => {
                   close();
-                  resetModal();
                 }}
               >
                 &times;
@@ -334,7 +323,6 @@ const Modal = (props) => {
               <button
                 onClick={() => {
                   close();
-                  resetModal();
                 }}
               >
                 취소

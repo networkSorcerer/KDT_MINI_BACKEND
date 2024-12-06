@@ -84,7 +84,6 @@ const ProductSaveModal = (props) => {
         alert("상품등록에 성공했습니다.");
         await handleUploadClick();
         close();
-        resetModal();
       } else {
         alert("상품 등록에 실패했습니다.");
       }
@@ -157,12 +156,6 @@ const ProductSaveModal = (props) => {
     }
   };
 
-  // 모달 창 클로즈 시 초기화
-  const resetModal = () => {
-    setUrl(null);
-    setFile(null);
-    setError(null);
-  };
   return (
     <ModalStyle>
       <div className={open ? "openModal modal" : "modal"}>
@@ -173,7 +166,6 @@ const ProductSaveModal = (props) => {
               <button
                 onClick={() => {
                   close();
-                  resetModal();
                 }}
               >
                 &times;
@@ -263,7 +255,6 @@ const ProductSaveModal = (props) => {
               <button
                 onClick={() => {
                   close();
-                  resetModal();
                 }}
               >
                 취소
