@@ -10,6 +10,7 @@ const AdminUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState("");
   useEffect(() => {
+    console.log("전역변수 확인 ", searchKeyword);
     UserList();
   }, [searchKeyword]);
 

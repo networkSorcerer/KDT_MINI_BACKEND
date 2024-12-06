@@ -37,7 +37,7 @@ public class UsersController3 {
         System.out.printf("커런트 페이지 : %d ", currentPage);
         System.out.printf("페이지 사이즈 : %d ", pageSize);
         System.out.printf("총 회원 수 : %d ", totalCount);
-
+        System.out.println(paramMap);
         resultMap.put("userList", userList);
         resultMap.put("cpage", currentPage);
         resultMap.put("pageSize", pageSize);

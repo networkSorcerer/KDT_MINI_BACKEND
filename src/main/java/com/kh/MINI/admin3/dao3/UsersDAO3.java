@@ -35,6 +35,7 @@ public class UsersDAO3 {
 
     public List<UserVO3> userList(Map<String, Object> paramMap) {
         try {
+            System.out.println(paramMap);
             // pageIndex와 pageSize를 추출
             int pageIndex = (int) paramMap.get("pageIndex");
             int pageSize = (int) paramMap.get("pageSize");

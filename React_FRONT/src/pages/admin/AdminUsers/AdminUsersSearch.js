@@ -7,8 +7,8 @@ export const AdminUsersSearch = () => {
   const [role, setRole] = useState("");
   const [input, setInput] = useState({
     searchKeyword: "",
-    searchCondition: "",
-    searchRole: "",
+    searchCondition: "name",
+    searchRole: "1",
   });
 
   useEffect(() => {
