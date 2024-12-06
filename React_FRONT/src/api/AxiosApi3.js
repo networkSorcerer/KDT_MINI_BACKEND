@@ -1,7 +1,7 @@
 import axios from "axios";
 const KH_DOMAIN = "http://localhost:8112";
 
-const AxiosApi = {
+const AxiosApi3 = {
   // 로그인
   login: async (email, pw) => {
     console.log("이메일 : ", email);
@@ -74,6 +74,22 @@ const AxiosApi = {
     const param = { product_id: productId };
     return await axios.post(KH_DOMAIN + "/products/delete_product", param);
   },
+
+  //  회원 리스트 조회
+  userList: async (searchKeyword, cpage = 1) => {
+    return await axios.get(KH_DOMAIN + "/users/list", {
+      params: {
+        ...searchKeyword, // 검색 키워드
+        currentPage: cpage, // 현재 페이지
+        pageSize: 5, // 페이지 크기
+      },
+    });
+  },
+
+  // 권한 조회
+  roleSearch: async () => {
+    return await axios.get(KH_DOMAIN + "/users/role");
+  },
 };
 
-export default AxiosApi;
+export default AxiosApi3;

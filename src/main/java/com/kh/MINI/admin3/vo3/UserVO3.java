@@ -9,14 +9,16 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
 public class UserVO3 {
     private String user_id;
     private String username;
     private String password;
     private String email;
     private int role;
-    private Date create_at;
     private String address;
     private String phone_number;
+
+    public UserVO3(int role) {
+        this.role = role;
+    }
 }

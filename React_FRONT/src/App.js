@@ -12,7 +12,7 @@ import SwiperExample from "./pages/admin/Swiper.js";
 import Swiper2 from "./pages/admin/Swiper2.js";
 import ProductSwiper from "./pages/admin/ImageArray.js";
 import { UserContextProvider } from "./api/provider/UserContextProvider.js";
-import AdminUsers from "./pages/admin/AdminUsers/AdminUsers.js";
+import { AdminUsersMap } from "./api/provider/UserSearchContextProvider.js";
 function App() {
   return (
     // RecoilRoot로 앱을 감싸서 Recoil 상태 관리 사용
@@ -31,7 +31,7 @@ function App() {
             <Route path="/swiper" element={<SwiperExample />} />
             <Route path="/swiper2" element={<Swiper2 />} />
             <Route path="/ps" element={<ProductSwiper />} />
-            <Route path="/users" element={<AdminUsers />} />
+            <Route path="/users" element={<AdminUsersMap />} />
           </Routes>
         </Router>
       </UserContextProvider>
