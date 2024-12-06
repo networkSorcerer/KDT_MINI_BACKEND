@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { ModalStyle, ModalButton } from "../style/ModalStyle";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../api/firebase";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const ProductSaveModal = (props) => {
   // 프롭스
@@ -158,46 +159,53 @@ const ProductSaveModal = (props) => {
 
   return (
     <ModalStyle>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div
+        className={open ? "modal fade show d-block" : "modal fade"}
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
         {open && (
           <section>
-            <header>
-              <h2> 상품 등록</h2>
-              <button
-                onClick={() => {
-                  close();
-                }}
-              >
-                &times;
-              </button>
-            </header>
-            <main>
-              {url && !file ? (
-                <img
-                  src={url}
-                  alt="Downloaded File"
-                  style={{ maxWidth: "100%" }}
-                />
-              ) : file ? (
-                <img
-                  src={URL.createObjectURL(file)} // 또는 업로드 후의 URL을 사용
-                  alt="Downloaded File"
-                  style={{ maxWidth: "100%" }}
-                />
-              ) : (
-                <p>파일이 선택되지 않았습니다.</p> // file과 url이 모두 없는 경우
-              )}
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <header className="modal-header">
+                  <h2 className="modal-title">상품 등록</h2>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={() => close()}
+                  />
+                </header>
+                <main className="modal-body">
+                  {url && !file ? (
+                    <img
+                      src={url}
+                      alt="Downloaded File"
+                      className="img-fluid"
+                    />
+                  ) : file ? (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="Downloaded File"
+                      className="img-fluid"
+                    />
+                  ) : (
+                    <p>파일이 선택되지 않았습니다.</p>
+                  )}
 
-              <input type="file" onChange={handleFileInputChange} />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={handleFileInputChange}
+                  />
 
-              <>
-                <div>
-                  <>
+                  <div className="mt-3">
                     <label>종류: </label>
                     <select
-                      onChange={(e) => {
-                        setCategory(e.target.value);
-                      }}
+                      className="form-select"
+                      onChange={(e) => setCategory(e.target.value)}
                     >
                       {categoryList && categoryList.length > 0 ? (
                         categoryList.map((a) => (
@@ -209,57 +217,71 @@ const ProductSaveModal = (props) => {
                         <option>데이터가 없습니다.</option>
                       )}
                     </select>
-                  </>
-                </div>
+                  </div>
 
-                <div>
-                  <label>상품 이름: </label>
-                  <input
-                    type="text"
-                    onChange={(e) => setProductName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label>상품 가격: </label>
-                  <input
-                    type="number"
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label>수량: </label>
-                  <input
-                    type="number"
-                    onChange={(e) => setStock(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label>상세 정보: </label>
-                  <input
-                    type="text"
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-              </>
-            </main>
-            <footer>
-              {isProductNameOK &&
-              price.length > 0 &&
-              stock.length > 0 &&
-              categoryName.length > 0 &&
-              description.length > 0 ? (
-                <ModalButton onClick={productSave}>등록</ModalButton>
-              ) : (
-                <ModalButton disabled>등록</ModalButton>
-              )}
-              <button
-                onClick={() => {
-                  close();
-                }}
-              >
-                취소
-              </button>
-            </footer>
+                  <div className="mt-3">
+                    <label>상품 이름: </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      onChange={(e) => setProductName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mt-3">
+                    <label>상품 가격: </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      onChange={(e) => setPrice(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mt-3">
+                    <label>수량: </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      onChange={(e) => setStock(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mt-3">
+                    <label>상세 정보: </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                  </div>
+                </main>
+                <footer className="modal-footer">
+                  {isProductNameOK &&
+                  price.length > 0 &&
+                  stock.length > 0 &&
+                  categoryName.length > 0 &&
+                  description.length > 0 ? (
+                    <ModalButton
+                      onClick={productSave}
+                      className="btn btn-primary"
+                    >
+                      등록
+                    </ModalButton>
+                  ) : (
+                    <ModalButton disabled className="btn btn-secondary">
+                      등록
+                    </ModalButton>
+                  )}
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => close()}
+                  >
+                    취소
+                  </button>
+                </footer>
+              </div>
+            </div>
           </section>
         )}
       </div>

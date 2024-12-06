@@ -9,6 +9,7 @@ import {
 } from "firebase/storage";
 import { storage } from "../../../api/firebase";
 import AxiosApi from "../../../api/AxiosApi3";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Modal = (props) => {
   const { open, close, type, productId, category, productName } = props;
@@ -217,117 +218,147 @@ const Modal = (props) => {
 
   return (
     <ModalStyle>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div
+        className={open ? "modal fade show d-block" : "modal fade"}
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
         {open && (
           <section>
-            <header>
-              <h2>{productId ? "상품 수정" : "상품 등록"}</h2>
-              <button
-                onClick={() => {
-                  close();
-                }}
-              >
-                &times;
-              </button>
-            </header>
-            <main>
-              {url && !file ? (
-                <img
-                  src={url}
-                  alt="Downloaded File"
-                  style={{ maxWidth: "100%" }}
-                />
-              ) : file ? (
-                <img
-                  src={URL.createObjectURL(file)} // 또는 업로드 후의 URL을 사용
-                  alt="Downloaded File"
-                  style={{ maxWidth: "100%" }}
-                />
-              ) : (
-                <p>파일이 선택되지 않았습니다.</p> // file과 url이 모두 없는 경우
-              )}
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <header className="modal-header">
+                  <h2 className="modal-title">
+                    {productId ? "상품 수정" : "상품 등록"}
+                  </h2>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={() => close()}
+                  />
+                </header>
+                <main className="modal-body">
+                  {url && !file ? (
+                    <img
+                      src={url}
+                      alt="Downloaded File"
+                      className="img-fluid"
+                    />
+                  ) : file ? (
+                    <img
+                      src={URL.createObjectURL(file)} // 또는 업로드 후의 URL을 사용
+                      alt="Downloaded File"
+                      className="img-fluid"
+                    />
+                  ) : (
+                    <p>파일이 선택되지 않았습니다.</p>
+                  )}
 
-              <input type="file" onChange={handleFileInputChange} />
-              {productDetail ? (
-                <>
-                  <div>
-                    <label>종류: </label>
-                    <input
-                      type="text"
-                      value={productDetail[0].category}
-                      readOnly
-                    />
-                  </div>
-                  <div>
-                    <label>상품 이름: </label>
-                    <input
-                      type="text"
-                      value={productDetail[0].name}
-                      onChange={(e) => {
-                        const updatedDetail = [...productDetail];
-                        updatedDetail[0].name = e.target.value;
-                        setProductDetail(updatedDetail);
-                        setCheckNameChange(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label>상품 가격: </label>
-                    <input
-                      type="text"
-                      value={productDetail[0].price}
-                      onChange={(e) => {
-                        const updatedDetail = [...productDetail];
-                        updatedDetail[0].price = e.target.value;
-                        setProductDetail(updatedDetail);
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label>수량: </label>
-                    <input
-                      type="number"
-                      value={productDetail[0].stock}
-                      onChange={(e) => {
-                        const updatedDetail = [...productDetail];
-                        updatedDetail[0].stock = e.target.value;
-                        setProductDetail(updatedDetail);
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label>상세 정보: </label>
-                    <input
-                      value={productDetail[0].description}
-                      onChange={(e) => {
-                        const updatedDetail = [...productDetail];
-                        updatedDetail[0].description = e.target.value;
-                        setProductDetail(updatedDetail);
-                      }}
-                    />
-                  </div>
-                </>
-              ) : (
-                <p>상품 데이터를 불러오는 중입니다...</p>
-              )}
-            </main>
-            <footer>
-              {productId ? (
-                <>
-                  <ModalButton onClick={() => update()}>수정</ModalButton>
-                  <ModalButton onClick={deleteProduct}>삭제</ModalButton>
-                </>
-              ) : (
-                <ModalButton>등록</ModalButton>
-              )}
-              <button
-                onClick={() => {
-                  close();
-                }}
-              >
-                취소
-              </button>
-            </footer>
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={handleFileInputChange}
+                  />
+
+                  {productDetail ? (
+                    <>
+                      <div className="mt-3">
+                        <label>종류: </label>
+                        <input
+                          type="text"
+                          value={productDetail[0].category}
+                          readOnly
+                          className="form-control"
+                        />
+                      </div>
+                      <div className="mt-3">
+                        <label>상품 이름: </label>
+                        <input
+                          type="text"
+                          value={productDetail[0].name}
+                          onChange={(e) => {
+                            const updatedDetail = [...productDetail];
+                            updatedDetail[0].name = e.target.value;
+                            setProductDetail(updatedDetail);
+                            setCheckNameChange(e.target.value);
+                          }}
+                          className="form-control"
+                        />
+                      </div>
+                      <div className="mt-3">
+                        <label>상품 가격: </label>
+                        <input
+                          type="text"
+                          value={productDetail[0].price}
+                          onChange={(e) => {
+                            const updatedDetail = [...productDetail];
+                            updatedDetail[0].price = e.target.value;
+                            setProductDetail(updatedDetail);
+                          }}
+                          className="form-control"
+                        />
+                      </div>
+                      <div className="mt-3">
+                        <label>수량: </label>
+                        <input
+                          type="number"
+                          value={productDetail[0].stock}
+                          onChange={(e) => {
+                            const updatedDetail = [...productDetail];
+                            updatedDetail[0].stock = e.target.value;
+                            setProductDetail(updatedDetail);
+                          }}
+                          className="form-control"
+                        />
+                      </div>
+                      <div className="mt-3">
+                        <label>상세 정보: </label>
+                        <input
+                          value={productDetail[0].description}
+                          onChange={(e) => {
+                            const updatedDetail = [...productDetail];
+                            updatedDetail[0].description = e.target.value;
+                            setProductDetail(updatedDetail);
+                          }}
+                          className="form-control"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <p>상품 데이터를 불러오는 중입니다...</p>
+                  )}
+                </main>
+                <footer className="modal-footer">
+                  {productId ? (
+                    <>
+                      <ModalButton
+                        onClick={() => update()}
+                        className="btn btn-primary"
+                      >
+                        수정
+                      </ModalButton>
+                      <ModalButton
+                        onClick={deleteProduct}
+                        className="btn btn-danger"
+                      >
+                        삭제
+                      </ModalButton>
+                    </>
+                  ) : (
+                    <ModalButton className="btn btn-primary">등록</ModalButton>
+                  )}
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => close()}
+                  >
+                    취소
+                  </button>
+                </footer>
+              </div>
+            </div>
           </section>
         )}
       </div>
