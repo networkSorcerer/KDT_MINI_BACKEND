@@ -29,12 +29,13 @@ public class ProductsDAO3 {
     // 상품 저장
     private static final String SAVE_PRODUCT="INSERT INTO PRODUCTS (name, description, price, stock, category_id) VALUES(?,?,?,?,?)";
     // 상품 삭제
-    private static final String DELETE_PRODUCT="DELETE FORM PRODUCTS WHERE PRODUCT_ID =?";
+    private static final String DELETE_PRODUCT="DELETE FROM PRODUCTS WHERE PRODUCT_ID =?";
     // 카테고리 리스트
     private static final String ALL_CATEGORY="SELECT * FROM CATEGORIES";
     // 상품 이름 유효성 검사
-    private static final String CHECK_PRODUCT_NAME="SELECT COUNT(*) FORM PRODUCTS WHERE NAME = ?";
-
+    private static final String CHECK_PRODUCT_NAME="SELECT COUNT(*) FROM PRODUCTS WHERE NAME = ?";
+    // 카테고리 이름 조회
+    private static final String GET_CATEGORY_NAME ="SELECT * FROM CATEGORIES WHERE CATEGORY_ID =?";
 
     // 상품 리스트 출력
     public List<ProductsVO3> getAllProducts() {
@@ -106,6 +107,29 @@ public class ProductsDAO3 {
             throw e;
         }
     }
+    // 카테고리 이름 조회
+    public List<CategoriesVO3> getCategoryName(int categoryId) {
+        try{
+            return jdbcTemplate.query(GET_CATEGORY_NAME,new CategoryRowMapper(), categoryId);
+        }catch (DataAccessException e) {
+            log.error("카테고리 이름 조회 중 에러 : ",e);
+            throw e;
+        }
+    }
+
+    // 상품 삭제
+    public boolean deleteProduct(int product_id) {
+        log.info("상품 삭제시 프로덕트 아이디 확인 : {} ", product_id);
+        try {
+            int result = jdbcTemplate.update(DELETE_PRODUCT, product_id); // update 사용
+            return result > 0;
+        } catch (DataAccessException e) {
+            log.error("상품 삭제 중 에러 발생", e);
+            throw e;
+        }
+    }
+
+
 
 
     private static class ProductsRowMapper implements RowMapper<ProductsVO3> {

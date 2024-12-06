@@ -44,11 +44,11 @@ export default function AdminHome() {
   const { email, role, userName } = useContext(UserContext);
   const closeModal = () => {
     setModalOpen(false);
-    //totalList();
+    totalList();
   };
   const closeModal1 = () => {
     setModalOpen1(false);
-    //totalList();
+    totalList();
   };
 
   const modalState = (product_id, category, productName) => {

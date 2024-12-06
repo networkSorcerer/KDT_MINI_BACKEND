@@ -81,13 +81,26 @@ public class ProductsController3 {
     }
 
     // 상품 이름 유효성 검사
-    @GetMapping("/product_name")
+    @PostMapping("/product_name")
     public ResponseEntity<Boolean> product_name (@RequestBody ProductsVO3 vo) {
+        log.info("백단에서 확인하는 (컨트롤러) 상품 이름{} : ", vo.getName());
         boolean isSuccess = productsDAO3.productName(vo.getName());
-        return ResponseEntity.ok(isSuccess);
+        return ResponseEntity.ok(!isSuccess);
     }
 
+    // 카테고리 이름 조회
+    @GetMapping("/category_name")
+    public Map<String , Object> category_name (@RequestParam("category_id") int category_id){
+        Map<String, Object> resultMap = new HashMap<>();
+        List<CategoriesVO3> categoryName= productsDAO3.getCategoryName(category_id);
+        resultMap.put("categoryName",categoryName);
+        return resultMap;
+    }
 
-
-
+    // 상품 삭제
+    @PostMapping("/delete_product")
+    public ResponseEntity<Boolean> delete_product(@RequestBody ProductsVO3 vo) {
+        boolean isSuccess = productsDAO3.deleteProduct(vo.getProduct_id());
+        return ResponseEntity.ok(isSuccess);
+    }
 }

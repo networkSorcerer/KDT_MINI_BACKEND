@@ -1,42 +1,76 @@
-import { useRecoilState } from "recoil";
 import AxiosApi from "../../../api/AxiosApi3";
 import { useEffect, useState, useRef } from "react";
-import { modalState1 } from "../../../api/recoil/modalState1";
 import { ModalStyle, ModalButton } from "../style/ModalStyle";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../api/firebase";
 
 const ProductSaveModal = (props) => {
+  // 프롭스
   const { close, open, type } = props;
+  // 카테고리 리스트
   const [categoryList, setCategoryList] = useState([]);
-  const [modal, setModal] = useRecoilState(modalState1);
+  // 이미지 출력
   const [url, setUrl] = useState(null);
+  // 에러 내용 출력
   const [error, setError] = useState(null);
+  // 이미지 저장
   const [file, setFile] = useState(null); // 업로드할 파일
+  // 카테고리 저장
   const [category, setCategory] = useState(1);
+  // 상품 이름 저장
   const [productName, setProductName] = useState("");
+  // 상품 가격 저장
   const [price, setPrice] = useState("");
+  //상품 수량 저장
   const [stock, setStock] = useState("");
+  // 상품 상세 설명
   const [description, setDescription] = useState("");
+  // 카테고리 명 저장
   const [categoryName, setCategoryName] = useState("");
-  const categoryRef = useRef("");
+  // 상품 이름 중복 검사
+  const [isProductNameOK, setIsProductNameOK] = useState(false);
+
   useEffect(() => {
     if (open) {
       Categories();
     }
   }, [open]);
+  useEffect(() => {
+    if (productName) {
+      productNameCheck();
+    }
+  }, [productName]);
+  useEffect(() => {
+    if (open) {
+      getCatagoryName();
+    }
+  }, [open]);
+  // 카테고리 명 가져오기
+  const getCatagoryName = async () => {
+    try {
+      const rsp = await AxiosApi.getCatagoryName(category);
+      console.log(rsp.data.categoryName[0].name);
+      setCategoryName(rsp.data.categoryName[0].name);
+    } catch {}
+  };
   // 상품 카테고리 리스트
   const Categories = async () => {
     try {
       const rsp = await AxiosApi.categoryList();
+      console.log();
       setCategoryList(rsp.data.category);
     } catch {}
   };
-
+  // 상품 이름 중복 검사
+  const productNameCheck = async () => {
+    console.log("저장 모달 상품 이름 : ", productName);
+    try {
+      const rsp = await AxiosApi.productNameCheck(productName);
+      setIsProductNameOK(rsp.data);
+    } catch {}
+  };
   // 상품 등록
   const productSave = async () => {
-    console.log("save 카테고리 네임 : ", categoryRef.current.value);
-
     try {
       const rsp = await AxiosApi.productSave(
         category,
@@ -49,21 +83,23 @@ const ProductSaveModal = (props) => {
       if (rsp.data === true) {
         alert("상품등록에 성공했습니다.");
         await handleUploadClick();
+        close();
+        resetModal();
       } else {
         alert("상품 등록에 실패했습니다.");
       }
     } catch {}
   };
+
   // 업로드 버튼 클릭 핸들러
   const handleUploadClick = () => {
-    console.log("categoryName : ", categoryName);
     if (!file) {
       alert("파일을 선택해주세요.");
       return;
     }
     const storageRef = ref(
       storage,
-      `images/${categoryRef.current.value}/${productName}.jpg`
+      `images/${categoryName}/${productName}.jpg`
     ); // Firebase Storage 참조
     uploadBytes(storageRef, file).then((snapshot) => {
       console.log("이미지 파이어베이스 업로드 성공");
@@ -76,6 +112,7 @@ const ProductSaveModal = (props) => {
         });
     });
   };
+
   // 파일 선택 핸들러
   const handleFileInputChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -88,7 +125,6 @@ const ProductSaveModal = (props) => {
         alert("파일 크기는 5MB를 초과할 수 없습니다.");
         return;
       }
-
       const img = new Image();
       img.src = URL.createObjectURL(selectedFile);
       img.onload = () => {
@@ -120,11 +156,12 @@ const ProductSaveModal = (props) => {
       };
     }
   };
+
+  // 모달 창 클로즈 시 초기화
   const resetModal = () => {
     setUrl(null);
     setFile(null);
     setError(null);
-    categoryRef.current = null;
   };
   return (
     <ModalStyle>
@@ -167,20 +204,12 @@ const ProductSaveModal = (props) => {
                     <label>종류: </label>
                     <select
                       onChange={(e) => {
-                        const selectedOption = JSON.parse(e.target.value); // JSON 문자열 파싱
-                        setCategory(selectedOption.id); // category_id 저장
-                        categoryRef.current = selectedOption.name; // a.name을 ref에 저장
+                        setCategory(e.target.value);
                       }}
                     >
                       {categoryList && categoryList.length > 0 ? (
                         categoryList.map((a) => (
-                          <option
-                            key={a.category_id}
-                            value={JSON.stringify({
-                              id: a.category_id,
-                              name: a.name,
-                            })} // JSON 형태로 value 저장
-                          >
+                          <option key={a.category_id} value={a.category_id}>
                             {a.name}
                           </option>
                         ))
@@ -222,7 +251,15 @@ const ProductSaveModal = (props) => {
               </>
             </main>
             <footer>
-              <ModalButton onClick={productSave}>등록</ModalButton>
+              {isProductNameOK &&
+              price.length > 0 &&
+              stock.length > 0 &&
+              categoryName.length > 0 &&
+              description.length > 0 ? (
+                <ModalButton onClick={productSave}>등록</ModalButton>
+              ) : (
+                <ModalButton disabled>등록</ModalButton>
+              )}
               <button
                 onClick={() => {
                   close();

@@ -1,8 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ModalStyle, ModalButton } from "../style/ModalStyle";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "../../../api/firebase";
+import AxiosApi from "../../../api/AxiosApi3";
 
 const Modal = (props) => {
   const { open, close, type, productId, category, productName } = props;
@@ -10,7 +16,12 @@ const Modal = (props) => {
   const [url, setUrl] = useState(null);
   const [error, setError] = useState(null);
   const [file, setFile] = useState(null); // 업로드할 파일
+  const [message, setMessage] = useState("");
+  const [fileName, setFileName] = useState(""); // 입력받은 파일 이름
+  const [checkNameChnage, setCheckNameChange] = useState("");
+  const [checkFileChange, setCheckFileChange] = useState("");
 
+  // 훅
   useEffect(() => {
     if (productId) {
       DetailProduct();
@@ -20,6 +31,7 @@ const Modal = (props) => {
     }
   }, [productId, category, productName]);
 
+  // 상품 상세 내역 출력
   const DetailProduct = async () => {
     try {
       const response = await axios.get(
@@ -29,10 +41,16 @@ const Modal = (props) => {
         }
       );
       setProductDetail(response.data.detailList);
+      console.log(
+        "상품 상세 내역 조회시 디테일리스트 안에서 상품명 가져오기 : ",
+        response.data.detailList[0].name
+      );
+      setFileName(response.data.detailList[0].name);
     } catch (error) {
       console.error("Error fetching product detail:", error);
     }
   };
+
   // 이미지 파일 가져오기
   const getImage = async () => {
     const fileRef = ref(storage, `images/${category}/${productName}.jpg`);
@@ -47,6 +65,7 @@ const Modal = (props) => {
 
   // 파일 선택 핸들러
   const handleFileInputChange = (e) => {
+    setCheckFileChange(e.target.value);
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       if (!selectedFile.type.startsWith("image/")) {
@@ -57,7 +76,6 @@ const Modal = (props) => {
         alert("파일 크기는 5MB를 초과할 수 없습니다.");
         return;
       }
-
       const img = new Image();
       img.src = URL.createObjectURL(selectedFile);
       img.onload = () => {
@@ -89,6 +107,7 @@ const Modal = (props) => {
       };
     }
   };
+
   // 업로드 버튼 클릭 핸들러
   const handleUploadClick = () => {
     if (!file) {
@@ -110,7 +129,17 @@ const Modal = (props) => {
         });
     });
   };
+
+  // 상품 수정 버튼 핸들러
   const update = async () => {
+    console.log(
+      "상품 이미지를 바꿨을때의 상태를 점검하는지 확인 : ",
+      checkFileChange.length
+    );
+    console.log(
+      "상품 이름을 바꿨을때의 상태를 점검하는지 확인 : ",
+      checkNameChnage
+    );
     try {
       const response = await axios.post(
         "http://localhost:8112/products/update",
@@ -119,6 +148,11 @@ const Modal = (props) => {
       if (response.data) {
         alert("수정되었습니다.");
         await handleUploadClick();
+        if (checkFileChange.length > 0 && checkNameChnage.length > 0) {
+          await handleDeleteUnuseImage();
+        }
+        close();
+        resetModal();
       } else {
         alert("수정에 실패하였습니다.");
       }
@@ -127,6 +161,62 @@ const Modal = (props) => {
       alert("에러가 발생했습니다.");
     }
   };
+
+  // 상품 삭제 활성화
+  const deleteProduct = async () => {
+    console.log("상품 ID 삭제시 점검 : ", productId);
+    try {
+      const rsp = await AxiosApi.deleteProduct(productId);
+      if (rsp.data === true) {
+        await handleDelete();
+        alert("상품이 삭제되었습니다.");
+        close();
+        resetModal();
+      } else {
+        alert("상품을 삭제하는데 실패하였습니다.");
+      }
+    } catch (error) {
+      console.error("상품 삭제 중 오류:", error);
+      alert("상품 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 상품 삭제시 이미지도 같이 삭제 되도록 수정
+  const handleDelete = async () => {
+    if (!fileName) {
+      setMessage("파일 이름을 입력해주세요.");
+      return;
+    }
+    const fileRef = ref(storage, `/images/${category}/${fileName}.jpg`);
+    try {
+      await deleteObject(fileRef);
+      setMessage(`${fileName} 삭제 완료!`);
+      setFileName("");
+      console.log(message);
+    } catch (error) {
+      console.error("파일 삭제 실패:", error);
+      setMessage("파일 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 상품 이미지와 상품 이름이 같이 변경 되었을시 안쓰는 이미지를 삭제한다.
+  const handleDeleteUnuseImage = async () => {
+    console.log(
+      "상품 이름과 상품 이미지가 다른 상태로 업데이트 될 때 작용해야할 함수까지 작동 하는지 확인"
+    );
+
+    const fileRef = ref(storage, `/images/${category}/${fileName}.jpg`);
+    try {
+      await deleteObject(fileRef);
+      setMessage(`${fileName} 삭제 완료!`);
+      setFileName("");
+      console.log(message);
+    } catch (error) {
+      console.error("파일 삭제 실패:", error);
+      setMessage("파일 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   // 모달 닫을 때 상태 초기화
   const resetModal = () => {
     setProductDetail(null);
@@ -134,6 +224,7 @@ const Modal = (props) => {
     setFile(null);
     setError(null);
   };
+
   return (
     <ModalStyle>
       <div className={open ? "openModal modal" : "modal"}>
@@ -187,6 +278,7 @@ const Modal = (props) => {
                         const updatedDetail = [...productDetail];
                         updatedDetail[0].name = e.target.value;
                         setProductDetail(updatedDetail);
+                        setCheckNameChange(e.target.value);
                       }}
                     />
                   </div>
@@ -232,7 +324,10 @@ const Modal = (props) => {
             </main>
             <footer>
               {productId ? (
-                <ModalButton onClick={() => update()}>수정</ModalButton>
+                <>
+                  <ModalButton onClick={() => update()}>수정</ModalButton>
+                  <ModalButton onClick={deleteProduct}>삭제</ModalButton>
+                </>
               ) : (
                 <ModalButton>등록</ModalButton>
               )}

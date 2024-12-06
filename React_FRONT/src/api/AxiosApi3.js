@@ -43,11 +43,8 @@ const AxiosApi = {
   categoryList: async () => {
     return await axios.get(KH_DOMAIN + "/products/category");
   },
-<<<<<<< HEAD
+
   // 상품 등록
-  productSave: async (params) => {
-    return await axios.post(KH_DOMAIN + "/products/save", params);
-=======
   productSave: async (category, productName, price, stock, description) => {
     const product = {
       category_id: category,
@@ -57,7 +54,25 @@ const AxiosApi = {
       description: description,
     };
     return await axios.post(KH_DOMAIN + "/products/save", product);
->>>>>>> 617968bc330fab2d5ecbc698b1f0dfa4e4b21aac
+  },
+
+  // 상품 이름 중복 검사
+  productNameCheck: async (productName) => {
+    const product = { name: productName };
+    return await axios.post(KH_DOMAIN + "/products/product_name", product);
+  },
+
+  // 카테고리 이름 가져오기
+  getCatagoryName: async (category) => {
+    return await axios.get(KH_DOMAIN + "/products/category_name", {
+      params: { category_id: category }, // 쿼리 파라미터로 전달
+    });
+  },
+
+  // 상품 삭제 하기
+  deleteProduct: async (productId) => {
+    const param = { product_id: productId };
+    return await axios.post(KH_DOMAIN + "/products/delete_product", param);
   },
 };
 
