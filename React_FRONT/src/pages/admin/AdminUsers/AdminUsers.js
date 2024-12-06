@@ -17,11 +17,13 @@ const AdminUsers = () => {
   const UserList = async (cpage) => {
     console.log("Page changed:", cpage); // 페이지 변경 시 로그 출력
     cpage = cpage || 1;
-    const rsp = await AxiosApi.userList({
+    const params = {
       ...searchKeyword,
       currentPage: cpage,
       pageSize: 5,
-    });
+    };
+
+    const rsp = await AxiosApi.userList(params);
     setUserList(rsp.data.userList);
     setCurrentPage(cpage);
     setTotalCnt(rsp.data.totalCount);

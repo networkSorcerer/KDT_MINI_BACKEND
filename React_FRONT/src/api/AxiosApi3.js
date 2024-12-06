@@ -76,13 +76,9 @@ const AxiosApi3 = {
   },
 
   //  회원 리스트 조회
-  userList: async (searchKeyword, cpage = 1) => {
+  userList: async (params) => {
     return await axios.get(KH_DOMAIN + "/users/list", {
-      params: {
-        ...searchKeyword, // 검색 키워드
-        currentPage: cpage, // 현재 페이지
-        pageSize: 5, // 페이지 크기
-      },
+      params: params, // params 객체로 전달받은 파라미터를 그대로 사용
     });
   },
 
