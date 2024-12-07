@@ -8,12 +8,16 @@ export const AdminUsersSearch = () => {
   const [input, setInput] = useState({
     searchKeyword: "",
     searchCondition: "name",
-    searchRole: "1",
+    searchRole: "",
   });
 
   useEffect(() => {
     selectRole();
   }, []);
+
+  useEffect(() => {
+    handlerSearch();
+  }, [input]);
 
   // 검색 기능
   const handlerSearch = () => {
@@ -26,16 +30,19 @@ export const AdminUsersSearch = () => {
     setRole(rsp.data.roleList);
   };
 
+  // 권한 검색 변경 확인
+  const checkRoleChange = (e) => {
+    const newRole = parseInt(e.currentTarget.value, 10); // 선택한 값을 숫자 타입으로 변환
+    setInput({ ...input, searchRole: newRole }); // 상태 업데이트
+    handlerSearch(newRole); // 새 값을 전달
+  };
+
   return (
     <>
       <div className="d-flex flex-row mb-3">
         <div className="me-3">
-          <select
-            className="form-select"
-            onChange={(e) =>
-              setInput({ ...input, searchRole: e.currentTarget.value })
-            }
-          >
+          <select className="form-select" onChange={checkRoleChange}>
+            <option value={-1}>전체</option>
             {role && role.length > 0 ? (
               role.map((a, i) => (
                 <option key={i} value={a.role}>
