@@ -86,6 +86,14 @@ const AxiosApi3 = {
   roleSearch: async () => {
     return await axios.get(KH_DOMAIN + "/users/role");
   },
+
+  // 유저 삭제
+  userDelete: async (user_id) => {
+    const params = {
+      user_id: user_id,
+    };
+    return await axios.post(KH_DOMAIN + "/users/delete", params);
+  },
 };
 
 export default AxiosApi3;

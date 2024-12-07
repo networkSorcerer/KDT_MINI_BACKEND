@@ -35,23 +35,6 @@ public class UsersDAO3 {
             ") " +
             "WHERE rn > ? AND rn <= ?";
 
-    // 검색 키워드와 권한에 따른 리스트 조회
-    private static final String USER_LIST_BY_KEYWORD = "SELECT USER_ID, USERNAME, PASSWORD, EMAIL, ROLE, ADDRESS, PHONE_NUMBER " +
-            "FROM ( " +
-            "  SELECT user_id, username, password, email, role, address, phone_number, " +
-            "         ROW_NUMBER() OVER (ORDER BY user_id DESC) AS rn " +
-            "  FROM USERS WHERE ? =? AND ROLE = ?" +
-            ") " +
-            "WHERE rn > ? AND rn <= ?";
-
-    // 검색 키워드에 따른 전체 리스트 조회
-    private static final String ALL_USER_LIST_BY_KEYWORD = "SELECT USER_ID, USERNAME, PASSWORD, EMAIL, ROLE, ADDRESS, PHONE_NUMBER " +
-            "FROM ( " +
-            "  SELECT user_id, username, password, email, role, address, phone_number, " +
-            "         ROW_NUMBER() OVER (ORDER BY user_id DESC) AS rn " +
-            "  FROM USERS WHERE ? =?" +
-            ") " +
-            "WHERE rn > ? AND rn <= ?";
 
     // 전체 회원 조회
     private static final String ALL_USERS =
@@ -62,6 +45,10 @@ public class UsersDAO3 {
                     "  FROM USERS " +
                     ") " +
                     "WHERE rn > ? AND rn <= ?";  // pageIndex와 pageSize로 동적으로 값 설정
+
+    // 회원 삭제
+    private static final String DELETE_USERS =
+            "DELETE FROM USERS WHERE USER_ID = ?";
 
     // 키워드가 없을때 권한 만으로 검색된 회원 수 조회
     private static final String USER_COUNT_BY_ROLE ="SELECT COUNT(*) FROM USERS WHERE ROLE =?";
@@ -194,6 +181,16 @@ public class UsersDAO3 {
             return jdbcTemplate.queryForObject(USER_COUNT_BY_ROLE, new Object[]{searchRole}, Integer.class);
         }catch (DataAccessException e){
             log.error("권한검색에 따른 회원 조회시 에러 ", e);
+            throw e;
+        }
+    }
+
+    public boolean delete(String userId) {
+        try{
+            int result = jdbcTemplate.update(DELETE_USERS,userId);
+            return result >0;
+        }catch (DataAccessException e) {
+            log.error("회원 삭제중 에러 발생 DAO  :" ,e);
             throw e;
         }
     }

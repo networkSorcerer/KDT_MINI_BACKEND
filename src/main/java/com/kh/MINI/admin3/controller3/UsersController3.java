@@ -1,9 +1,11 @@
 package com.kh.MINI.admin3.controller3;
 
 import com.kh.MINI.admin3.dao3.UsersDAO3;
+import com.kh.MINI.admin3.vo3.ResponseMessage;
 import com.kh.MINI.admin3.vo3.UserVO3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -47,22 +49,23 @@ public class UsersController3 {
 
         String searchKeyword = (String) paramMap.get("searchKeyword");
         String searchCondition = (String) paramMap.get("searchCondition");
-
+        // 검색어가 없고 전체 조회일 경우
         if (Objects.equals(searchKeyword, "") && searchRole == -1) {
             List<UserVO3> userList = usersDAO3.userList(paramMap);
             resultMap.put("userList", userList);
             int totalCount = usersDAO3.totalCount(paramMap);
             resultMap.put("totalCount", totalCount);
-
+        // 검색어가 없고 조건부 조회일 경우
         } else if (Objects.equals(searchKeyword, "") && searchRole != -1){
             List<UserVO3> noSearchKeywordUserList = usersDAO3.noSearchKeywordUserList(paramMap);
             resultMap.put("userList", noSearchKeywordUserList);
             int noSearchKeywordTotalCount = usersDAO3.noSearchKeywordTotalCount(paramMap);
             resultMap.put("totalCount", noSearchKeywordTotalCount);
-
+        // 검색어 조회일 경우
         } else {
             List<UserVO3> searchKeywordUserList = usersDAO3.searchKeywordUserList(paramMap);
             resultMap.put("userList", searchKeywordUserList);
+            // 검색어 조회일 경우 totalCount
         }
 
         log.info("paramMap : {}", paramMap);
@@ -85,6 +88,22 @@ public class UsersController3 {
         List<UserVO3> roleList = usersDAO3.roleList();
         resultMap.put("roleList",roleList);
         return resultMap;
+    }
+
+    // 유저 삭제
+    @PostMapping("/delete")
+    public ResponseEntity<ResponseMessage> userDelete (@RequestBody UserVO3 vo) {
+        boolean isSuccess = usersDAO3.delete(vo.getUser_id());
+
+        String message;
+        if (isSuccess) {
+            message = "회원 삭제 성공";
+        } else {
+            message = "회원 삭제 실패";
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(isSuccess, message);
+        return ResponseEntity.ok(responseMessage);
     }
 
 }

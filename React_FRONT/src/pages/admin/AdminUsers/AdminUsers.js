@@ -9,12 +9,16 @@ const AdminUsers = () => {
   const [totalCnt, setTotalCnt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [userId, setUserId] = useState("");
+
+  // 유저 리스트 출력
   useEffect(() => {
     console.log("전역변수 확인 ", searchKeyword);
     UserList();
   }, [searchKeyword]);
 
-  // 유저 리스트 출력
+  // 유저 삭제 처리
   const UserList = async (cpage) => {
     console.log("Page changed:", cpage); // 페이지 변경 시 로그 출력
     cpage = cpage || 1;
@@ -29,6 +33,36 @@ const AdminUsers = () => {
     setCurrentPage(cpage);
     setTotalCnt(rsp.data.totalCount);
   };
+
+  const clickDelete = (userId) => {
+    const userConfirmed = window.confirm("정말 삭제하시겠습니까?");
+    if (userConfirmed) {
+      setConfirmed(true);
+      setUserId(userId);
+    } else {
+      setConfirmed(false);
+    }
+  };
+
+  const userDelete = async () => {
+    try {
+      const rsp = await AxiosApi.userDelete(userId);
+      if (rsp.data == true) {
+        alert("회원 삭제에 성공했습니다.");
+        userList();
+      } else {
+        alert("회원 삭제에 실패하였습니다.");
+      }
+    } catch (error) {
+      alert("에러가 발생했습니다.");
+    }
+  };
+
+  useEffect(() => {
+    if (confirmed && userId) {
+      userDelete();
+    }
+  }, [confirmed, userId]); // confirmed와 userId가 변경될 때만 실행
 
   return (
     <>
@@ -55,7 +89,12 @@ const AdminUsers = () => {
                 <td>{user.role}</td>
                 <td>
                   <button className="btn btn-primary">주문 목록 조회</button>
-                  <button className="btn btn-warning ml-2">삭제 </button>
+                  <button
+                    className="btn btn-warning ml-2"
+                    onClick={() => clickDelete(user.user_id)} // 삭제 클릭 시 확인 상태 관리
+                  >
+                    삭제
+                  </button>
                 </td>
               </tr>
             ))
