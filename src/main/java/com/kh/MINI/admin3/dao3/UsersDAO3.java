@@ -118,7 +118,7 @@ public class UsersDAO3 {
             int startRow = pageIndex;
             int endRow = pageIndex + pageSize;
 
-            if (searchRole == 3){
+            if (searchRole == -1){
                 // 전체 회원 조회
                 return jdbcTemplate.query(
                         ALL_USERS,
@@ -140,34 +140,50 @@ public class UsersDAO3 {
 
     // 키워드가 있을 때 유저 리스트 조건 검색
     public List<UserVO3> searchKeywordUserList(Map<String, Object> paramMap) {
-        System.out.println("searchKeywordUserList ");
-        try{
+        try {
             // pageIndex와 pageSize를 추출
             int pageIndex = (int) paramMap.get("pageIndex");
             int pageSize = (int) paramMap.get("pageSize");
             int searchRole = (int) paramMap.get("searchRole");
             String searchKeyword = (String) paramMap.get("searchKeyword");
             String searchCondition = (String) paramMap.get("searchCondition");
-            System.out.printf("searchKeyword : %s",searchKeyword);
-            log.info("searchKeyword : {}",searchKeyword);
-            log.info("searchCondition : {}",searchCondition);
-            System.out.printf("searchCondition : %s",searchCondition);
+
+            System.out.printf("searchKeyword : %s", searchKeyword);
+            log.info("searchKeyword : {}", searchKeyword);
+            log.info("searchCondition : {}", searchCondition);
+            System.out.printf("searchCondition : %s", searchCondition);
 
             // pageIndex와 pageSize 계산
             int startRow = pageIndex;
             int endRow = pageIndex + pageSize;
 
-            if (searchRole ==3) {
+            if (searchRole == -1) {
                 // 전체 + 키워드 검색
-                return jdbcTemplate.query(ALL_USER_LIST_BY_KEYWORD,  new Object[] {searchCondition ,searchKeyword, startRow, endRow },  // startRow와 endRow를 쿼리에 전달
-                        new UserRowMapper());// 결과를 매핑할 RowMapper);
+                String sql = "SELECT USER_ID, USERNAME, PASSWORD, EMAIL, ROLE, ADDRESS, PHONE_NUMBER " +
+                        "FROM ( " +
+                        "  SELECT user_id, username, password, email, role, address, phone_number, " +
+                        "         ROW_NUMBER() OVER (ORDER BY user_id DESC) AS rn " +
+                        "  FROM USERS WHERE " + searchCondition + " LIKE ? " +
+                        ") " +
+                        "WHERE rn > ? AND rn <= ?";
+                String searchKeywordWithWildcard = "%" + searchKeyword + "%";  // LIKE 구문을 위한 와일드카드 추가
+                return jdbcTemplate.query(sql, new Object[]{searchKeywordWithWildcard, startRow, endRow},
+                        new UserRowMapper()); // 결과를 매핑할 RowMapper
             } else {
                 // 권한 + 키워드 검색
-                return jdbcTemplate.query(USER_LIST_BY_KEYWORD,  new Object[] {searchCondition ,searchKeyword,searchRole, startRow, endRow },  // startRow와 endRow를 쿼리에 전달
-                        new UserRowMapper());// 결과를 매핑할 RowMapper);
+                String sql = "SELECT USER_ID, USERNAME, PASSWORD, EMAIL, ROLE, ADDRESS, PHONE_NUMBER " +
+                        "FROM ( " +
+                        "  SELECT user_id, username, password, email, role, address, phone_number, " +
+                        "         ROW_NUMBER() OVER (ORDER BY user_id DESC) AS rn " +
+                        "  FROM USERS WHERE " + searchCondition + " LIKE ? AND ROLE = ? " +
+                        ") " +
+                        "WHERE rn > ? AND rn <= ?";
+                String searchKeywordWithWildcard = "%" + searchKeyword + "%";  // LIKE 구문을 위한 와일드카드 추가
+                return jdbcTemplate.query(sql, new Object[]{searchKeywordWithWildcard, searchRole, startRow, endRow},
+                        new UserRowMapper()); // 결과를 매핑할 RowMapper
             }
-        }catch (DataAccessException e) {
-            log.error("키워드 검색을 통한 유저리스트 조회시 에러 발생 : ",e);
+        } catch (DataAccessException e) {
+            log.error("키워드 검색을 통한 유저리스트 조회시 에러 발생 : ", e);
             throw e;
         }
     }

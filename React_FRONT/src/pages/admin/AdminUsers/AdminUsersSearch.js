@@ -7,7 +7,7 @@ export const AdminUsersSearch = () => {
   const [role, setRole] = useState("");
   const [input, setInput] = useState({
     searchKeyword: "",
-    searchCondition: "name",
+    searchCondition: "username",
     searchRole: "",
   });
 
@@ -61,7 +61,7 @@ export const AdminUsersSearch = () => {
               setInput({ ...input, searchCondition: e.currentTarget.value })
             }
           >
-            <option value="name">이름</option>
+            <option value="username">이름</option>
             <option value="email">이메일</option>
           </select>
         </div>
