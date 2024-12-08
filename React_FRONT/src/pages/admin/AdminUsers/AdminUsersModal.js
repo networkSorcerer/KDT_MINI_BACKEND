@@ -159,18 +159,29 @@ const AdminUsersModal = (props) => {
   };
   const onChangeConPw = (e) => {
     const passwordCurrent = e.target.value;
+
+    // 비밀번호 길이에 맞게 마커 처리
     setMarkedConPw("*".repeat(passwordCurrent.length));
+    // 실제 비밀번호는 따로 저장
     setInputConPw(passwordCurrent);
+
+    // 비밀번호 일치 여부 체크
     if (passwordCurrent !== inputPw) {
       setConPwMessage("비밀 번호가 일치하지 않습니다.");
       setIsConPw(false);
     } else {
-      setConPwMessage("비밀 번호가 일치 합니다. )");
+      setConPwMessage("비밀 번호가 일치 합니다.");
       setIsConPw(true);
     }
   };
+
   const onChangeName = (e) => {
-    setInputName(e.target.value);
+    const newName = e.target.value;
+    setInputName(newName);
+    setDetailUserInfoList((prevState) => ({
+      ...prevState,
+      username: newName, // username을 변경
+    }));
     setIsName(true);
   };
 
@@ -265,7 +276,7 @@ const AdminUsersModal = (props) => {
                           <Input
                             type="password"
                             placeholder="패스워드"
-                            value={"*".repeat(inputPw.length)}
+                            value={"*".repeat(inputPw.length) || ""}
                             onChange={onChangePw}
                             isValid={isPw}
                           />
@@ -285,7 +296,7 @@ const AdminUsersModal = (props) => {
                           <Input
                             type="password"
                             placeholder="패스워드 확인"
-                            value={markedConPw}
+                            value={markedConPw || ""}
                             onChange={onChangeConPw}
                             isValid={isConPw}
                           />
