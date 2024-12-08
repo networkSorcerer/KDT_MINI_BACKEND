@@ -229,9 +229,7 @@ const Modal = (props) => {
             <div className="modal-dialog">
               <div className="modal-content">
                 <header className="modal-header">
-                  <h2 className="modal-title">
-                    {productId ? "상품 수정" : "상품 등록"}
-                  </h2>
+                  <h2 className="modal-title">상품 수정</h2>
                   <button
                     type="button"
                     className="btn-close"

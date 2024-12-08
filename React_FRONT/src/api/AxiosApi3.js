@@ -94,6 +94,14 @@ const AxiosApi3 = {
     };
     return await axios.post(KH_DOMAIN + "/users/delete", params);
   },
+
+  // 상세 회원 정보 조회
+  detailUserInfo: async (user_id) => {
+    const params = {
+      user_id: user_id,
+    };
+    return await axios.get(KH_DOMAIN + "/users/detailUser", { params });
+  },
 };
 
 export default AxiosApi3;

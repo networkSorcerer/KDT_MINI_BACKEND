@@ -52,6 +52,12 @@ public class UsersDAO3 {
 
     // 키워드가 없을때 권한 만으로 검색된 회원 수 조회
     private static final String USER_COUNT_BY_ROLE ="SELECT COUNT(*) FROM USERS WHERE ROLE =?";
+
+    // 키워드가 있을 때 검색된 회원 수 조회
+    private static final String USER_COUNT_BY_SEARCH = "SELECT COUNT(*) FROM USERS WHERE ? = ? AND ROLE = ?";
+
+    // 회원 정보 상세 조회
+    private static final String DETAIL_USER_INFO = "SELECT * FROM USERS WHERE USER_ID = ?";
     public List<UserVO3> userList(Map<String, Object> paramMap) {
         try {
             // pageIndex와 pageSize를 추출
@@ -83,6 +89,7 @@ public class UsersDAO3 {
             throw e;
         }
     }
+
     // 전체 회원 수 조회
     public int totalCount(Map<String, Object> paramMap) {
         try{
@@ -175,6 +182,7 @@ public class UsersDAO3 {
         }
     }
 
+    // 키워드 검색이 없을 시 검색된 회원수 조회
     public int noSearchKeywordTotalCount(Map<String, Object> paramMap) {
         try{
             int searchRole = (int) paramMap.get("searchRole");
@@ -185,12 +193,23 @@ public class UsersDAO3 {
         }
     }
 
+    // 회원 삭제
     public boolean delete(String userId) {
         try{
             int result = jdbcTemplate.update(DELETE_USERS,userId);
             return result >0;
         }catch (DataAccessException e) {
             log.error("회원 삭제중 에러 발생 DAO  :" ,e);
+            throw e;
+        }
+    }
+
+    // 회원 상세 정보
+    public List<UserVO3> detailUserInfo(int userId) {
+        try{
+            return jdbcTemplate.query(DETAIL_USER_INFO,new UserRowMapper(), userId);
+        }catch (DataAccessException e){
+            log.error("상세 회원 정보 조회중 에러 발생",e);
             throw e;
         }
     }

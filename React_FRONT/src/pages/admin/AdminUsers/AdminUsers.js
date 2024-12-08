@@ -2,13 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import AxiosApi from "../../../api/AxiosApi3";
 import { UserSearchContext } from "../../../api/provider/UserSearchContextProvider";
 import { PageNavigate } from "../../../api/Pagination/PageNavigate";
+import AdminUsersModal from "./AdminUsersModal";
 
 const AdminUsers = () => {
   const { searchKeyword } = useContext(UserSearchContext);
   const [userList, setUserList] = useState([]);
   const [totalCnt, setTotalCnt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [modal, setModal] = useState("");
+  const [modal, setModal] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [userId, setUserId] = useState("");
 
@@ -49,13 +50,21 @@ const AdminUsers = () => {
       const rsp = await AxiosApi.userDelete(userId);
       if (rsp.data == true) {
         alert("회원 삭제에 성공했습니다.");
-        userList();
       } else {
         alert("회원 삭제에 실패하였습니다.");
       }
     } catch (error) {
       alert("에러가 발생했습니다.");
     }
+  };
+
+  const modalState = (user_id) => {
+    setUserId(user_id);
+    setModal(true);
+  };
+  const closeModal = () => {
+    setModal(false);
+    UserList();
   };
 
   useEffect(() => {
@@ -83,7 +92,9 @@ const AdminUsers = () => {
             userList.map((user) => (
               <tr key={user.user_id}>
                 <td>{user.user_id}</td>
-                <td>{user.username}</td>
+                <td onClick={() => modalState(user.user_id)}>
+                  {user.username}
+                </td>
                 <td>{user.email}</td>
                 <td>{user.password}</td>
                 <td>{user.role}</td>
@@ -113,6 +124,12 @@ const AdminUsers = () => {
         itemsCountPerPage={5}
         activePage={currentPage}
       ></PageNavigate>
+      <AdminUsersModal
+        user_id={userId}
+        open={modal}
+        close={closeModal}
+        type={true}
+      ></AdminUsersModal>
     </>
   );
 };

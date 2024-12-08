@@ -4,7 +4,6 @@ import Button from "../../components/ButtonComponent";
 import { Container, Items } from "../../components/SignupComponent";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../api/AxiosApi3.js";
-import { Button3, Select3, Input3, Container3 } from "../../components/style3";
 import MyComponent from "../../components/MyComponent.js";
 import axios from "axios";
 const Signup = () => {

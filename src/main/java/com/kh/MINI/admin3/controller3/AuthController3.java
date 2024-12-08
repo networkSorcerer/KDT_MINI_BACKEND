@@ -26,7 +26,6 @@ public class AuthController3 {
         Map<String, Object> resultMap = new HashMap<>();
         List<UserVO3> roleCheck = adminDAO3.gradeCheck(email, password);  // Integer로 타입 명시
         resultMap.put("roleCheck", roleCheck);
-        System.out.println(roleCheck);
         return resultMap;
     }
 
