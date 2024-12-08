@@ -116,4 +116,11 @@ public class UsersController3 {
         return resultMap;
     }
 
+    // 유저 정보 업데이트
+    @PostMapping("/userupdate")
+    public ResponseEntity<Boolean> userupdate(@RequestBody UserVO3 vo) {
+        boolean isSuccess = usersDAO3.update(vo);
+        return ResponseEntity.ok(isSuccess);
+    }
+
 }

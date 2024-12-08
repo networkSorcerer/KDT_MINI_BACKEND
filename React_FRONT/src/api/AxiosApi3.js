@@ -102,6 +102,18 @@ const AxiosApi3 = {
     };
     return await axios.get(KH_DOMAIN + "/users/detailUser", { params });
   },
+
+  // 회원 정보 수정
+  userupdate: async (inputEmail, inputPw, inputName, inputAddress, ph) => {
+    const params = {
+      email: inputEmail,
+      password: inputPw,
+      username: inputName,
+      address: inputAddress,
+      phone_number: ph,
+    };
+    return await axios.post(KH_DOMAIN + "/users/userupdate", params);
+  },
 };
 
 export default AxiosApi3;

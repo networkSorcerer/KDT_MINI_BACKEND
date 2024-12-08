@@ -9,7 +9,7 @@ import AxiosApi from "../../../api/AxiosApi3";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-
+import { StyledPasswordMask } from "../../../components/InputComponent";
 const AdminUsersModal = (props) => {
   const { open, close, type, user_id } = props;
   const navigate = useNavigate();
@@ -47,6 +47,8 @@ const AdminUsersModal = (props) => {
   const [isAddr, setIsAddr] = useState(true);
   const [isDAddr, setIsDAddr] = useState(true);
   const [detailUserInfoList, setDetailUserInfoList] = useState([]);
+  const [isComposing, setIsComposing] = useState(false); // IME 조합 상태
+
   const KH_DOMAIN = "http://localhost:8112";
 
   useEffect(() => {
@@ -66,13 +68,18 @@ const AdminUsersModal = (props) => {
 
   // 상세회원 정보 조회
   useEffect(() => {
-    DetailUserInfo(user_id);
+    if (open && user_id) {
+      DetailUserInfo(user_id);
+    }
   }, [user_id]);
 
   const DetailUserInfo = async () => {
     try {
       const rsp = await AxiosApi.detailUserInfo(user_id);
       setDetailUserInfoList(rsp.data.detailUser[0]);
+      setInputName(rsp.data.detailUser[0].username);
+      setInputEmail(rsp.data.detailUser[0].email);
+
       const [post, addr, daddr] = rsp.data.detailUser[0].address.split(":");
       setPostcode(post || "");
       setAddress(addr || "");
@@ -133,9 +140,30 @@ const AdminUsersModal = (props) => {
       setIsPw(true);
     }
   };
+
+  const onChangeConPw = (e) => {
+    const passwordCurrent = e.target.value;
+    console.log(inputPw);
+    console.log(e.target.value);
+
+    // 조합 중이 아닌 경우에만 상태 업데이트
+
+    setInputConPw(passwordCurrent); // 원래 값 저장
+    console.log(inputConPw);
+    // 비밀번호 일치 여부 체크
+    if (passwordCurrent !== inputPw) {
+      setConPwMessage("비밀번호가 일치하지 않습니다.");
+      setIsConPw(false);
+    } else {
+      setConPwMessage("비밀번호가 일치합니다.");
+      setIsConPw(true);
+    }
+  };
+
   const onChageMidPh = (e) => {
     const phRegex = /^\d{4}$/;
     const midPhCurrent = e.target.value;
+    console.log(midPhCurrent);
     setHpMid(midPhCurrent);
     if (!phRegex.test(midPhCurrent)) {
       setPhMessage("4자리 숫자로 입력해 주세요.");
@@ -148,6 +176,7 @@ const AdminUsersModal = (props) => {
   const onChageLstPh = (e) => {
     const phRegex = /^\d{4}$/;
     const lstPhCurrent = e.target.value;
+    console.log(lstPhCurrent);
     setHpLst(lstPhCurrent);
     if (!phRegex.test(lstPhCurrent)) {
       setPhMessage1("4자리 숫자로 입력해 주세요.");
@@ -155,23 +184,6 @@ const AdminUsersModal = (props) => {
     } else {
       setPhMessage1("확인되었습니다.");
       setIsPh1(true);
-    }
-  };
-  const onChangeConPw = (e) => {
-    const passwordCurrent = e.target.value;
-
-    // 비밀번호 길이에 맞게 마커 처리
-    setMarkedConPw("*".repeat(passwordCurrent.length));
-    // 실제 비밀번호는 따로 저장
-    setInputConPw(passwordCurrent);
-
-    // 비밀번호 일치 여부 체크
-    if (passwordCurrent !== inputPw) {
-      setConPwMessage("비밀 번호가 일치하지 않습니다.");
-      setIsConPw(false);
-    } else {
-      setConPwMessage("비밀 번호가 일치 합니다.");
-      setIsConPw(true);
     }
   };
 
@@ -186,15 +198,28 @@ const AdminUsersModal = (props) => {
   };
 
   const UnionFirst = () => {
-    console.log(hpFst);
+    const phoneNumber = `${hpFst}-${hpMid}-${hpLst}`;
+    const fullAddress = `${postcode}:${address}:${detailAddress}`;
+
     setPh(hpFst + "-" + hpMid + "-" + hpLst);
     setInputAddress(postcode + ":" + address + ":" + detailAddress);
+    // 콘솔에서 값 확인 (디버깅용)
+    console.log("Phone:", phoneNumber);
+    console.log("Address:", fullAddress);
+
+    // 상태 업데이트
+    setDetailUserInfoList((prevState) => ({
+      ...prevState,
+      phone_number: phoneNumber,
+      address: fullAddress,
+    }));
   };
+
   const onClickLogin = async () => {
     console.log(ph);
     console.log(inputAddress);
     try {
-      const memberReg = await AxiosApi.signup(
+      const memberReg = await AxiosApi.userupdate(
         inputEmail,
         inputPw,
         inputName,
@@ -203,12 +228,12 @@ const AdminUsersModal = (props) => {
       );
       console.log(memberReg.data);
       if (memberReg.data) {
-        alert("회원 가입에 성공하였습니다.");
-        navigate("/login");
+        alert("회원 수정에 성공하였습니다.");
+        navigate("/users");
       } else {
         // setModalOpen(true);
         // setModelText("회원 가입에 실패 했습니다.");
-        alert("회원 가입에 실패 했습니다.");
+        alert("회원 수정에 실패 했습니다.");
       }
     } catch (e) {
       alert("서버가 응답하지 않습니다.");
@@ -216,6 +241,7 @@ const AdminUsersModal = (props) => {
   };
   const onChangePostCode = (e) => {
     const newPostCode = e.target.value.trim();
+    console.log(newPostCode);
     setPostcode(newPostCode);
 
     // 빈 문자열 또는 null 체크
@@ -224,16 +250,17 @@ const AdminUsersModal = (props) => {
 
   const onChangeAddr = (e) => {
     const newAddr = e.target.value;
+    console.log(newAddr);
     setAddress(newAddr);
     setIsAddr(newAddr.length > 0);
   };
 
   const onChangeDAddr = (e) => {
     const newDAddr = e.target.value;
+    console.log(newDAddr);
     setDetailAddress(newDAddr);
     setIsDAddr(newDAddr.length > 0);
   };
-  const update = () => {};
 
   return (
     <ModalStyle>
@@ -273,10 +300,10 @@ const AdminUsersModal = (props) => {
                           />
                         </Items>
                         <Items variant="item2">
-                          <Input
+                          <StyledPasswordMask
                             type="password"
                             placeholder="패스워드"
-                            value={"*".repeat(inputPw.length) || ""}
+                            value={inputPw}
                             onChange={onChangePw}
                             isValid={isPw}
                           />
@@ -293,12 +320,11 @@ const AdminUsersModal = (props) => {
                           )}
                         </Items>
                         <Items variant="item2">
-                          <Input
-                            type="password"
-                            placeholder="패스워드 확인"
-                            value={markedConPw || ""}
+                          <StyledPasswordMask
+                            type="text"
+                            placeholder="비밀번호 확인"
+                            value={inputConPw} // 마스킹된 값만 화면에 표시
                             onChange={onChangeConPw}
-                            isValid={isConPw}
                           />
                         </Items>
                         <Items variant="hint">
@@ -452,5 +478,4 @@ const AdminUsersModal = (props) => {
     </ModalStyle>
   );
 };
-
 export default AdminUsersModal;

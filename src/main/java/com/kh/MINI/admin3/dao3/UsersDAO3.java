@@ -58,6 +58,9 @@ public class UsersDAO3 {
 
     // 회원 정보 상세 조회
     private static final String DETAIL_USER_INFO = "SELECT * FROM USERS WHERE USER_ID = ?";
+
+    // 회원 정보 업데이트
+    private static final String UPDATE_USER = "UPDATE USERS SET USERNAME = ? , PASSWORD = ? , ADDRESS = ? , PHONE_NUMBER = ? WHERE EMAIL = ?";
     public List<UserVO3> userList(Map<String, Object> paramMap) {
         try {
             // pageIndex와 pageSize를 추출
@@ -210,6 +213,16 @@ public class UsersDAO3 {
             return jdbcTemplate.query(DETAIL_USER_INFO,new UserRowMapper(), userId);
         }catch (DataAccessException e){
             log.error("상세 회원 정보 조회중 에러 발생",e);
+            throw e;
+        }
+    }
+
+    public boolean update(UserVO3 vo) {
+        try{
+            int result = jdbcTemplate.update(UPDATE_USER, vo.getUsername(), vo.getPassword(),vo.getAddress(), vo.getPhone_number(), vo.getEmail());
+            return result > 0;
+        }catch (DataAccessException e){
+            log.error("회원 업데이트 중 에러 발생");
             throw e;
         }
     }
