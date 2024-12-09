@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AxiosApi3 from "../../../api/AxiosApi3";
-
+// 쿼리 변경 그냥 order는 개별주문 custom은 커스텀 컴퓨터 인것 처럼 설정 하고 custom_id는 무시?
+//
 const AdminUserOrder = () => {
   const { user_id } = useParams();
   const [productList, setProductList] = useState([]);
@@ -103,9 +104,10 @@ const AdminUserOrder = () => {
                 cursor: "grab",
               }}
             >
+              {item.product_id}
               {item.product}
               {item.price}
-              {item.description}
+              {item.stock}
             </div>
           ))}
         </div>
@@ -124,7 +126,7 @@ const AdminUserOrder = () => {
           <h2>개별 주문 목록</h2>
           {orderList.map((item) => (
             <div
-              key={item.id}
+              key={item.product_id}
               draggable
               onDragStart={(e) => handleDragStart(e, item, "orderList")}
               style={{
@@ -134,7 +136,10 @@ const AdminUserOrder = () => {
                 cursor: "grab",
               }}
             >
-              {item.total_price}
+              {item.product_id}
+              {item.product}
+              {item.price}
+              {item.quantity}
             </div>
           ))}
         </div>
@@ -153,7 +158,7 @@ const AdminUserOrder = () => {
           <h2>커스텀 PC 주문 목록</h2>
           {customOrderList.map((item) => (
             <div
-              key={item.id}
+              key={item.product_id}
               draggable
               onDragStart={(e) => handleDragStart(e, item, "customOrderList")}
               style={{
@@ -163,7 +168,10 @@ const AdminUserOrder = () => {
                 cursor: "grab",
               }}
             >
-              {item.total_price}
+              {item.product_id}
+              {item.product}
+              {item.price}
+              {item.quantity}
             </div>
           ))}
         </div>

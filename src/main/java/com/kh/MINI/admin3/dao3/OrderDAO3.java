@@ -18,6 +18,7 @@ import java.util.Map;
 @Slf4j
 public class OrderDAO3 {
     private final JdbcTemplate jdbcTemplate;
+
     // 낱개 제품에 대한 주문 목록
     private final String ORDER_LIST ="SELECT" +
             "    o.order_id, " +
@@ -43,7 +44,8 @@ public class OrderDAO3 {
             "    PRODUCTS p ON d.product_id = p.product_id " +
             "LEFT JOIN " +
             "    CATEGORIES c ON p.category_id = c.category_id " +
-            "WHERE o.USER_ID = ?";
+            "WHERE o.USER_ID = ? AND D.PRODUCT_ID IS NOT NULL";
+
     // 커스텀 PC에 대한 주문 목록
     private final String CUSTOM_ORDER_LIST = "SELECT C.CUSTOM_ID, C.TOTAL_PRICE, C.USER_ID, " +
             "D.DETAIL_ID, D.QUANTITY, D.PRICE, D.SUBTOTAL, D.PRODUCT_ID, " +
