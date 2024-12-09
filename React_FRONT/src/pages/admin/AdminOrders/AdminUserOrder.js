@@ -52,20 +52,41 @@ const AdminUserOrder = () => {
     e.preventDefault();
     const { item, source } = JSON.parse(e.dataTransfer.getData("item"));
 
-    if (source === destination) return;
+    if (source === destination) return; // 같은 곳으로 드래그하면 무시
 
+    // 기존에 드래그된 아이템을 리스트에서 제거
     if (source === "orderList") {
       setOrderList((prev) =>
-        prev.filter((cartItem) => cartItem.id !== item.id)
+        prev.filter((cartItem) => cartItem.product_id !== item.product_id)
       );
     } else if (source === "customOrderList") {
       setCustomOrderList((prev) =>
-        prev.filter((wishItem) => wishItem.id !== item.id)
+        prev.filter((wishItem) => wishItem.product_id !== item.product_id)
       );
     }
 
+    // 드롭된 곳에 아이템 추가
     if (destination === "orderList") {
-      setOrderList((prev) => [...prev, item]);
+      // 동일한 product_id가 있을 경우 quantity를 합산하여 추가
+      setOrderList((prev) => {
+        const existingItem = prev.find(
+          (cartItem) => cartItem.product_id === item.product_id
+        );
+        if (existingItem) {
+          // 이미 존재하는 아이템이면 수량을 더한다
+          return prev.map((cartItem) =>
+            cartItem.product_id === item.product_id
+              ? {
+                  ...cartItem,
+                  quantity: cartItem.quantity + item.quantity,
+                }
+              : cartItem
+          );
+        } else {
+          // 없으면 그냥 추가
+          return [...prev, item];
+        }
+      });
     } else if (destination === "customOrderList") {
       setCustomOrderList((prev) => [...prev, item]);
     }
